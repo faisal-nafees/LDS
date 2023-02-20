@@ -95,81 +95,81 @@ class HomeController extends Controller
         }
     }
 
-    public function ajaxFormValidation(Request $request)
-    {
+    // public function ajaxFormValidation(Request $request)
+    // {
 
-        $errors = [];
+    //     $errors = [];
 
-        if (empty($request->unit) || is_null($request->unit)) {
-            $errors[]  = 'Please select unit';
-        }
-
-
-        if (empty($request->bottom_thickness_grain_direction) || is_null($request->bottom_thickness_grain_direction)) {
-            $errors[]  = 'Please select bottom thickness grain direction';
-        }
-
-        if (empty($request->back_notch_drill_undermount_slide) || is_null($request->back_notch_drill_undermount_slide)) {
-
-            $errors[]  = 'Please select back notch drill undermount slide';
-        }
-
-        if (empty($request->front_notch_undermount_slide) || is_null($request->front_notch_undermount_slide)) {
-            $errors[]  = 'Please select front notch undermount slide';
-        }
-
-        if (empty($request->bracket) || is_null($request->bracket)) {
-            $errors[]  = 'Please select Bracket';
-        }
-
-        if (empty($request['product']) || is_null($request['product'])) {
-            $errors[]  = 'Please select Items';
-        } else {
-
-            foreach ($request['product'] as $key => $value) {
-
-                $product_type = DrawerProduct::where('id', $request['product'][$key])->pluck('type')->first();
-                $item = $request['id'][$key];
-
-                if (empty($request['product'][$key])) {
-                    $errors[]  =  'Product Field Cannot be empty in Item ' . $item;
-                }
-
-                if ($product_type == 1) {
-                    if (empty($request['note'][$key])) {
-                        $errors[]  = 'Note Field Cannot be empty in Item ' . $item;
-                    }
-
-                    if (empty($request['design'][$key])) {
-                        $errors[]  = 'Design Field Cannot be empty in Item ' . $item;
-                    }
-                } else {
-                    if (empty($request['width'][$key])) {
-                        $errors[] = 'Width Field Cannot be empty in Item ' . $item;
-                    }
-                    if (empty($request['height'][$key])) {
-                        $errors[] = 'Height Field Cannot be empty in Item ' . $item;
-                    }
-                    if (empty($request['depth'][$key])) {
-                        $errors[] = 'Depth Field Cannot be empty in Item ' . $item;
-                    }
-                }
-            }
-        }
+    //     if (empty($request->unit) || is_null($request->unit)) {
+    //         $errors[]  = 'Please select unit';
+    //     }
 
 
-        if (count($errors) > 0) {
-            return response()->json([
-                'success' => false,
-                'errors' => $errors
-            ]);
-        }
+    //     if (empty($request->bottom_thickness_grain_direction) || is_null($request->bottom_thickness_grain_direction)) {
+    //         $errors[]  = 'Please select bottom thickness grain direction';
+    //     }
+
+    //     if (empty($request->back_notch_drill_undermount_slide) || is_null($request->back_notch_drill_undermount_slide)) {
+
+    //         $errors[]  = 'Please select back notch drill undermount slide';
+    //     }
+
+    //     if (empty($request->front_notch_undermount_slide) || is_null($request->front_notch_undermount_slide)) {
+    //         $errors[]  = 'Please select front notch undermount slide';
+    //     }
+
+    //     if (empty($request->bracket) || is_null($request->bracket)) {
+    //         $errors[]  = 'Please select Bracket';
+    //     }
+
+    //     if (empty($request['product']) || is_null($request['product'])) {
+    //         $errors[]  = 'Please select Items';
+    //     } else {
+
+    //         foreach ($request['product'] as $key => $value) {
+
+    //             $product_type = DrawerProduct::where('id', $request['product'][$key])->pluck('type')->first();
+    //             $item = $request['id'][$key];
+
+    //             if (empty($request['product'][$key])) {
+    //                 $errors[]  =  'Product Field Cannot be empty in Item ' . $item;
+    //             }
+
+    //             if ($product_type == 1) {
+    //                 if (empty($request['note'][$key])) {
+    //                     $errors[]  = 'Note Field Cannot be empty in Item ' . $item;
+    //                 }
+
+    //                 if (empty($request['design'][$key])) {
+    //                     $errors[]  = 'Design Field Cannot be empty in Item ' . $item;
+    //                 }
+    //             } else {
+    //                 if (empty($request['width'][$key])) {
+    //                     $errors[] = 'Width Field Cannot be empty in Item ' . $item;
+    //                 }
+    //                 if (empty($request['height'][$key])) {
+    //                     $errors[] = 'Height Field Cannot be empty in Item ' . $item;
+    //                 }
+    //                 if (empty($request['depth'][$key])) {
+    //                     $errors[] = 'Depth Field Cannot be empty in Item ' . $item;
+    //                 }
+    //             }
+    //         }
+    //     }
 
 
-        return response()->json([
-            'success' => true,
-        ]);;
-    }
+    //     if (count($errors) > 0) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'errors' => $errors
+    //         ]);
+    //     }
+
+
+    //     return response()->json([
+    //         'success' => true,
+    //     ]);;
+    // }
 
     public function ajaxValidateWishlistName(Request $request)
     {
