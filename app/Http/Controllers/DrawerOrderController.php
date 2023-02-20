@@ -60,6 +60,7 @@ class DrawerOrderController extends Controller
             'bottom_thickness_grain_direction' => ['required'],
             'back_notch_drill_undermount_slide' => ['required'],
             'front_notch_undermount_slide' => ['required'],
+            'logo_branded' => ['required'],
             'bracket' => ['required'],
             'product' => ['required'],
             'height' => ['required'],
@@ -247,7 +248,7 @@ class DrawerOrderController extends Controller
     public function checkout(Request $request)
     {
         $request->validate([
-            // 'city' => ['required']
+            'city' => ['required']
         ]);
 
         $data = [
@@ -365,12 +366,7 @@ class DrawerOrderController extends Controller
     public function deliveryFee(Request $request)
     {
         $city = $request->city;
-        // $weight = $request->weight;
-        $sessionEncode = json_encode(session('billingDetails'));
-        $sessionDecode = json_decode($sessionEncode, true);
-        $city = $request->city;
-        $weight = $sessionDecode['total_weight_lbs'];
-
+        $weight = $request->weight;
         $air_factor  = $weight * 2.452256944;
         $couriers = City::where('city', $city)->get();
         $bourassa_price = 0;

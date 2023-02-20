@@ -131,7 +131,7 @@
             <div class="row">
                 <div class="col-lg-5">
                     <div class="c-p-btm-form">
-                        {{-- <div class="form-group row">
+                        <div class="form-group row">
                             <label for="shippingcity" class="col-md-2 col-form-label">Shipping to
                                 City:</label>
                             <div class="col-md-10">
@@ -139,30 +139,6 @@
                                     <select class="form-select" id="shippingcity" name="city" readonly>
                                         <option value="{{ $billingDetails['city'] }}">{{ $billingDetails['city'] }}
                                         </option>
-                                    </select>
-                                </div>
-
-                                <p class="city-notes">*If City is not listed, please call us at
-                                    905.282.1722
-                                </p>
-                            </div>
-                        </div> --}}
-                        <div class="form-group row">
-                            <label for="shippingcity" class="col-md-2 col-form-label">Shipping to
-                                City:</label>
-                            <div class="col-md-10">
-                                <div class="all-dev">
-                                    <select class="form-select" id="shippingcity" name="city" required>
-                                        <option selected disabled>Drop down menu with available
-                                            cities
-                                            <span>(alphabetic
-                                                order)</span>
-                                        </option>
-                                        @foreach ($cities as $city)
-                                            <option value="{{ $city->city }}">{{ $city->city }}
-                                            </option>
-                                        @endforeach
-                                        <option value="other">Other</option>
                                     </select>
                                 </div>
 
@@ -229,39 +205,7 @@
 
     <x-frontend.section name='scripts'>
         <script>
-            $('#shippingcity').change(function() {
-                let city = $(this).val();
-                let weight = $('.__totalWeight').val();
-                let price = $('.__priceInp').val();
-                localStorage.setItem('shipping_city', city);
-
-                $.ajax({
-                    url: "{{ route('delivery.price') }}",
-                    method: 'get',
-                    data: {
-                        city: city,
-                        weight: weight,
-                        price: price
-                    },
-                    success: function(data) {
-                        var obj = jQuery.parseJSON(data);
-                        $('.__deliveryFee').html('$' + obj.deliveryFee);
-                        $('.__deliveryFeeInp').val(obj.deliveryFee);
-                        $('.__subtotal').html('$' + obj.subtotal);
-                        $('.__subtotalInp').val(obj.subtotal);
-                        $('.__taxes').html('$' + obj.taxes);
-                        $('.__taxesInp').val(obj.taxes);
-                        $('.__cartTotal').html('$' + obj.cartTotal)
-                        $('.__cartTotalInp').val(obj.cartTotal)
-                        $('.__courierInp').val(obj.courier)
-
-                    },
-                    errors: function(error) {
-                        console.log(error);
-                    }
-                });
-
-            });
+            // Scripts goes here
         </script>
     </x-frontend.section>
 

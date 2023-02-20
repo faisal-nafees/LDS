@@ -163,7 +163,12 @@
 
             {{-- FORM STARTS HERE --}}
 
-            <x-response></x-response>
+            {{-- <x-response></x-response> --}}
+            @if (session('success'))
+                <div style="background: #088F8F; margin: 5px; padding: 5px 10px; color:white;">
+                    {{ session('success') }}
+                </div>
+            @endif
 
             <form method="POST" id="__orderForm" action="{{ route('place.order') }}" enctype="multipart/form-data">
                 @csrf
@@ -188,6 +193,10 @@
                                             METRIC (mm)</option>
                                     </select>
                                 </div>
+                                @if ($errors->has('unit'))
+                                    <div class="error text-danger">
+                                        {{ $errors->first('unit') }}</div>
+                                @endif
                                 <p><b>Important Note: </b> if Imperial/Metric is changed after selecting, all data
                                     on the page will be reset. </p>
                             </div>
@@ -207,6 +216,10 @@
 
                                     </select>
                                 </div>
+                                @if ($errors->has('bottom_thickness_grain_direction'))
+                                    <div class="error text-danger">
+                                        {{ $errors->first('bottom_thickness_grain_direction') }}</div>
+                                @endif
                             </div>
                             <!--  end: Product Input Bottom Thickness -->
                             <div class="input-group product-input-backnotch">
@@ -226,6 +239,10 @@
                                         @endforeach
                                     </select>
                                 </div>
+                                @if ($errors->has('back_notch_drill_undermount_slide'))
+                                    <div class="error text-danger">
+                                        {{ $errors->first('back_notch_drill_undermount_slide') }}</div>
+                                @endif
                             </div>
 
                             <!-- Back Notch Modal -->
@@ -267,6 +284,10 @@
                                         @endforeach
                                     </select>
                                 </div>
+                                @if ($errors->has('front_notch_undermount_slide'))
+                                    <div class="error text-danger">
+                                        {{ $errors->first('front_notch_undermount_slide') }}</div>
+                                @endif
                             </div>
                             <!-- Back Notch Modal -->
                             <div class="modal fade frontnotch_modal" id="frontnotchModal" tabindex="-1"
@@ -304,6 +325,10 @@
                                         @endforeach
                                     </select>
                                 </div>
+                                @if ($errors->has('bracket'))
+                                    <div class="error text-danger">
+                                        {{ $errors->first('bracket') }}</div>
+                                @endif
                             </div>
                             <div class="modal fade frontnotch_modal" id="addinstallModal" tabindex="-1"
                                 aria-hidden="true">
@@ -341,6 +366,10 @@
                                             the Drawer (ESI)</option>
                                     </select>
                                 </div>
+                                @if ($errors->has('logo_branded'))
+                                    <div class="error text-danger">
+                                        {{ $errors->first('logo_branded') }}</div>
+                                @endif
                             </div>
                             <div class="modal fade frontnotch_modal" id="logobrandedModal" tabindex="-1"
                                 aria-hidden="true">
@@ -391,7 +420,7 @@
                         <!-- end: H (in) -->
 
                         <div class="col-12 col-md-10 col-sm-12">
-                            <div class="input-group">
+                            <div class="d-flex">
                                 <div class="input-group-append">
                                     <label class="input-group-text font-weight-bold"
                                         for="inputGroupSelect02">Product</label>
@@ -413,6 +442,10 @@
 
                                 </select>
                             </div>
+                            @if ($errors->has('product'))
+                                <div class="error text-danger">
+                                    {{ $errors->first('product') }}</div>
+                            @endif
                         </div>
                         <!-- end: Product Select -->
 
@@ -452,6 +485,10 @@
                                         <option value="0.937">15/16"</option>
                                     </select>
                                 </div>
+                                @if ($errors->has('height'))
+                                    <div class="error text-danger">
+                                        {{ $errors->first('height') }}</div>
+                                @endif
                             </div>
                         </div>
                         <!-- end: H (in) -->
@@ -485,6 +522,10 @@
                                         <option value="0.937">15/16"</option>
                                     </select>
                                 </div>
+                                @if ($errors->has('width'))
+                                    <div class="error text-danger">
+                                        {{ $errors->first('width') }}</div>
+                                @endif
                             </div>
                         </div>
                         <!-- end: W (in) -->
@@ -518,6 +559,10 @@
                                         <option value="0.937">15/16"</option>
                                     </select>
                                 </div>
+                                @if ($errors->has('depth'))
+                                    <div class="error text-danger">
+                                        {{ $errors->first('depth') }}</div>
+                                @endif
                             </div>
                         </div>
                         <!-- end: D (in) -->
@@ -704,41 +749,41 @@
 
 
             // ajax form validation 
-            $('#__orderForm').submit(function(e) {
-                e.preventDefault();
-                let formData = new FormData(this);
+            // $('#__orderForm').submit(function(e) {
+            //     e.preventDefault();
+            //     let formData = new FormData(this);
 
-                $.ajax({
-                    type: 'POST',
-                    url: "{{ route('ajaxOrderValidation') }}",
-                    data: formData,
-                    contentType: false,
-                    processData: false,
-                    success: (response) => {
-                        if (response.success == true) {
-                            this.submit();
-                        } else {
-                            $('#wishlist_name').val('');
-                            $('#ajax-error').empty();
-                            response.errors.forEach(function(error, index) {
-                                $('#ajax-error').append(
-                                    '<div style="background: #FF5733; padding: 5px 10px; color:white;">' +
-                                    error + '</div>'
-                                );
+            //     $.ajax({
+            //         type: 'POST',
+            //         url: "{{ route('ajaxOrderValidation') }}",
+            //         data: formData,
+            //         contentType: false,
+            //         processData: false,
+            //         success: (response) => {
+            //             if (response.success == true) {
+            //                 this.submit();
+            //             } else {
+            //                 $('#wishlist_name').val('');
+            //                 $('#ajax-error').empty();
+            //                 response.errors.forEach(function(error, index) {
+            //                     $('#ajax-error').append(
+            //                         '<div style="background: #FF5733; padding: 5px 10px; color:white;">' +
+            //                         error + '</div>'
+            //                     );
 
-                                $('html, body').animate({
-                                    scrollTop: $("#ajax-error").offset().top
-                                }, 10);
-                            });
+            //                     $('html, body').animate({
+            //                         scrollTop: $("#ajax-error").offset().top
+            //                     }, 10);
+            //                 });
 
-                        }
-                    },
-                    error: function(errors) {
-                        console.log(errors);
-                    }
+            //             }
+            //         },
+            //         error: function(errors) {
+            //             console.log(errors);
+            //         }
 
-                });
-            });
+            //     });
+            // });
 
             function changeUnit(el) {
                 let unit = $(el).val();
