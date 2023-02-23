@@ -192,6 +192,8 @@
                             </li>
                         </ul>
                         <div class="c-p-info-btn">
+                            <button type="submit" value="wishlist" class="btn-dovetail wishlist-btn"
+                                id="addToWishlist">Add to Wishlist</button>
                             <a href="{{ route('pay') }}" class="btn btn-success">PROCEED TO PAYMENT
                             </a>
                         </div>
@@ -201,11 +203,93 @@
             </div>
         </div>
         <!-- end: container -->
+        {{-- wishlist model form --}}
+        <!-- Back Notch Modal -->
+        <div class="modal fade backnotch_modal" id="wishlistModel" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-row row">
+                            <label class="col-4">Wishlist Name:</label>
+                            <input type="text" id="val_wishlist_name" class="input-control col-6">
+                        </div>
+                        <button type="button" class="btn btn-sm btn-primary" id="validataWishlist">Save to
+                            Wishlist</button>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </section>
 
     <x-frontend.section name='scripts'>
         <script>
             // Scripts goes here
+
+            $('#addToWishlist').click(function(e) {
+                e.preventDefault();
+                $("#wishlistModel").modal('show');
+            });
+
+            $("#validataWishlist").click(function() {
+                let name = $('#val_wishlist_name').val();
+                let id = '{{ auth()->id() }}';
+
+                $.ajax({
+                    type: 'get',
+                    url: "{{ route('ajaxValidateWishlistName') }}",
+                    data: {
+                        id: id,
+                        name: name,
+                        cart: 0
+                    },
+                    success: (response) => {
+                        console.log(response);
+                        if (response.success == true) {
+                            let msg = 'Wishlist already exists. Do you want to add number (' +
+                                response.number + ') to wishlist name?';
+                            if (confirm(msg) == true) {
+                                name = name + ' (' + response.number + ')';
+                            }
+
+                        }
+                        saveToWishlist(name);
+                        $("#wishlistModel").modal('hide');
+
+                    },
+                    error: function(errors) {
+                        console.log(errors);
+                    }
+
+                });
+            });
+
+            function saveToWishlist(name) {
+                var id = '{{ auth()->id() }}';
+                $.ajax({
+                    type: 'get',
+                    url: "{{ route('ajaxValidateWishlistName') }}",
+                    data: {
+                        id: id,
+                        name: name,
+                        cart: 1
+                    },
+                    success: (response) => {
+                        if (response.success == true) {
+                            window.location.href = "{{ route('index') }}";
+                        }
+                    },
+                    error: function(errors) {
+                        console.log(errors);
+                    }
+
+                });
+            }
         </script>
     </x-frontend.section>
 

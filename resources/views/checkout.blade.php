@@ -14,7 +14,7 @@
             </div>
             <!-- end: row -->
 
-            <x-response></x-response>
+            {{-- <x-response></x-response> --}}
 
             <form action="{{ route('payment') }}" method="post">
                 @csrf
@@ -26,50 +26,86 @@
                         <div class="form-group mt-2 col-12">
                             <label for="">Purchase Order/Reference Number *</label>
                             <input type="text" name="reference_number" class="form-control"
-                                placeholder="Purchase Order/Reference Number" required>
+                                placeholder="Purchase Order/Reference Number">
+                            @if ($errors->has('reference_number'))
+                                <div class="error text-danger">
+                                    {{ $errors->first('reference_number') }}</div>
+                            @endif
                         </div>
                         <div class="form-group mt-2 col-12">
                             <label for="">Company*</label>
-                            <input type="text" required name="billing_company" class="form-control"
+                            <input type="text" name="billing_company" class="form-control"
                                 placeholder="Billing Company" value="{{ $user->user_billing_company }}">
+                            @if ($errors->has('billing_company'))
+                                <div class="error text-danger">
+                                    {{ $errors->first('billing_company') }}</div>
+                            @endif
                         </div>
                         <div class="form-group mt-2 col-lg-6">
                             <label for="">First Name*</label>
-                            <input type="text" required name="billing_first_name" class="form-control"
+                            <input type="text" name="billing_first_name" class="form-control"
                                 placeholder="Billing First name" value="{{ $user->user_billing_fname }}">
+                            @if ($errors->has('billing_first_name'))
+                                <div class="error text-danger">
+                                    {{ $errors->first('billing_first_name') }}</div>
+                            @endif
                         </div>
                         <div class="form-group mt-2 col-lg-6">
                             <label for="">Last Name*</label>
-                            <input type="text" required name="billing_last_name" class="form-control"
+                            <input type="text" name="billing_last_name" class="form-control"
                                 placeholder="Billing Last name" value="{{ $user->user_billing_lname }}">
+                            @if ($errors->has('billing_last_name'))
+                                <div class="error text-danger">
+                                    {{ $errors->first('billing_last_name') }}</div>
+                            @endif
                         </div>
                         <div class="form-group mt-2 col-lg-6">
                             <label for="">Telephone *</label>
-                            <input type="text" required name="billing_phone" class="form-control"
-                                placeholder="Billing Phone" value="{{ $user->user_billing_phone }}">
+                            <input type="tel" name="billing_phone" class="form-control" placeholder="Billing Phone"
+                                value="{{ $user->user_billing_phone }}">
+                            @if ($errors->has('billing_phone'))
+                                <div class="error text-danger">
+                                    {{ $errors->first('billing_phone') }}</div>
+                            @endif
                         </div>
                         <div class="form-group mt-2 col-lg-6">
                             <label for="">Email*</label>
-                            <input type="email" required name="billing_email" class="form-control"
-                                placeholder="Billing Email" value="{{ $user->user_billing_email }}">
+                            <input type="email" name="billing_email" class="form-control" placeholder="Billing Email"
+                                value="{{ $user->user_billing_email }}">
+                            @if ($errors->has('billing_email'))
+                                <div class="error text-danger">
+                                    {{ $errors->first('billing_email') }}</div>
+                            @endif
                         </div>
 
                         <div class="form-group mt-2 col-lg-6">
                             <label for=""> <b>Note: Billing Address* (When paying by Credit Card, Billing
                                     Address must be
                                     exactly as it appears on credit card statement)</b></label>
-                            <input type="text" required name="billing_address" class="form-control"
+                            <input type="text" name="billing_address" class="form-control"
                                 placeholder="Shipping Address" value="{{ $user->user_billing_address }}">
+                            @if ($errors->has('billing_address'))
+                                <div class="error text-danger">
+                                    {{ $errors->first('billing_address') }}</div>
+                            @endif
                         </div>
                         <div class="form-group mt-2 col-lg-6">
                             <label for="">City*</label>
-                            <input type="text" required name="billing_city" class="form-control"
-                                placeholder="Billing City" value="{{ $user->user_billing_city }}">
+                            <input type="text" name="billing_city" class="form-control" placeholder="Billing City"
+                                value="{{ $user->user_billing_city }}">
+                            @if ($errors->has('billing_city'))
+                                <div class="error text-danger">
+                                    {{ $errors->first('billing_city') }}</div>
+                            @endif
                         </div>
                         <div class="form-group mt-2 col-lg-6">
                             <label for="">Postal / Zip Code*</label>
-                            <input type="text" required name="billing_postal_code" class="form-control"
+                            <input type="text" name="billing_postal_code" class="form-control"
                                 placeholder="Billing Postal Code" value="{{ $user->user_billing_postal }}">
+                            @if ($errors->has('billing_postal_code'))
+                                <div class="error text-danger">
+                                    {{ $errors->first('billing_postal_code') }}</div>
+                            @endif
                         </div>
 
                         <div class="form-group mt-2 col-lg-6">
@@ -220,44 +256,63 @@
                     <div class="row">
                         <div class="form-group mt-2 col-lg-6">
                             <label for="">First Name*</label>
-                            <input type="text" required name="shipping_first_name"
-                                class="form-control secondaryFields" id="first_name" onchange="getValue()"
-                                placeholder="Shipping First name">
+                            <input type="text" name="shipping_first_name" class="form-control secondaryFields"
+                                id="first_name" onchange="getValue()" placeholder="Shipping First name">
+                            @if ($errors->has('shipping_first_name'))
+                                <div class="error text-danger">
+                                    {{ $errors->first('shipping_first_name') }}</div>
+                            @endif
                         </div>
                         <div class="form-group mt-2 col-lg-6">
                             <label for="">Last Name*</label>
-                            <input type="text" id="last_name" required name="shipping_last_name"
-                                onchange="getValue()" class="form-control secondaryFields"
-                                placeholder="Shipping Last name">
+                            <input type="text" id="last_name" name="shipping_last_name" onchange="getValue()"
+                                class="form-control secondaryFields" placeholder="Shipping Last name">
+                            @if ($errors->has('shipping_last_name'))
+                                <div class="error text-danger">
+                                    {{ $errors->first('shipping_last_name') }}</div>
+                            @endif
                         </div>
                         <div class="form-group mt-2 col-lg-6">
                             <label for="">Email*</label>
-                            <input type="email" id="email" required name="shipping_email"
-                                onchange="getValue()" class="form-control secondaryFields"
-                                placeholder="Shipping Email">
+                            <input type="email" id="email" name="shipping_email" onchange="getValue()"
+                                class="form-control secondaryFields" placeholder="Shipping Email">
+                            @if ($errors->has('shipping_email'))
+                                <div class="error text-danger">
+                                    {{ $errors->first('shipping_email') }}</div>
+                            @endif
                         </div>
                         <div class="form-group mt-2 col-lg-6">
                             <label for="">Telephone*</label>
-                            <input type="text" id="phone" required name="shipping_phone"
-                                onchange="getValue()" class="form-control secondaryFields"
-                                placeholder="Shipping Phone">
+                            <input type="tel" id="phone" name="shipping_phone" onchange="getValue()"
+                                class="form-control secondaryFields" placeholder="Shipping Phone">
+                            @if ($errors->has('shipping_phone'))
+                                <div class="error text-danger">
+                                    {{ $errors->first('shipping_phone') }}</div>
+                            @endif
                         </div>
                         <div class="form-group mt-2 col-lg-12">
                             <label for="">Address</label>
-                            <input type="text" id="address" required name="shipping_address"
-                                onchange="getValue()" class="form-control secondaryFields"
-                                placeholder="Shipping Address">
+                            <input type="text" id="address" name="shipping_address" onchange="getValue()"
+                                class="form-control secondaryFields" placeholder="Shipping Address">
+                            @if ($errors->has('shipping_address'))
+                                <div class="error text-danger">
+                                    {{ $errors->first('shipping_address') }}</div>
+                            @endif
                         </div>
                         <div class="form-group mt-2 col-lg-6">
                             <label for="">City*</label>
-                            <input type="text" id="city" required name="shipping_city" onchange="getValue()"
+                            <input type="text" id="city" name="shipping_city" onchange="getValue()"
                                 class="form-control secondaryFields" placeholder="Shipping City"
                                 value="{{ session()->get('billingDetails')['city'] }}">
+                            @if ($errors->has('shipping_city'))
+                                <div class="error text-danger">
+                                    {{ $errors->first('shipping_city') }}</div>
+                            @endif
                         </div>
                         <div class="form-group mt-2 col-lg-6">
                             <label for="">Province/State and Country *</label>
                             <select name="shipping_country" id="country" class="form-control secondaryFields"
-                                onchange="getValue()" required="">
+                                onchange="getValue()"="">
                                 <option value="AB">AB (CA)</option>
                                 <option value="BC">BC (CA)</option>
                                 <option value="MB">MB (CA)</option>
@@ -325,9 +380,12 @@
                         </div>
                         <div class="form-group mt-2 col-lg-6">
                             <label for="">Postal/Zip Code*</label>
-                            <input type="text" id="postal_code" required name="shipping_postal_code"
-                                onchange="getValue()" class="form-control secondaryFields"
-                                placeholder="Shipping Postal Code">
+                            <input type="text" id="postal_code" name="shipping_postal_code" onchange="getValue()"
+                                class="form-control secondaryFields" placeholder="Shipping Postal Code">
+                            @if ($errors->has('shipping_postal_code'))
+                                <div class="error text-danger">
+                                    {{ $errors->first('shipping_postal_code') }}</div>
+                            @endif
                         </div>
 
 
@@ -342,7 +400,7 @@
         <!-- end: container -->
     </section>
 
-    <x-frontend.section required name='scripts'>
+    <x-frontend.section name='scripts'>
         <script>
             // Scripts goes here
 
@@ -371,6 +429,15 @@
                     $("input[name='shipping_postal_code']").val(bpc);
                     $("input[name='shipping_phone']").val(bp);
                     $("select[name='shipping_country']").val(bc);
+
+                    localStorage.setItem('shipping_first_name', bfn);
+                    localStorage.setItem('shipping_last_name', bln);
+                    localStorage.setItem('shipping_email', be);
+                    localStorage.setItem('shipping_address', ba);
+                    localStorage.setItem('shipping_city', bcity);
+                    localStorage.setItem('shipping_postal_code', bpc);
+                    localStorage.setItem('shipping_phone', bp);
+                    localStorage.setItem('shipping_country', bc);
 
                     $(".secondaryFields").attr('readonly', true);
 

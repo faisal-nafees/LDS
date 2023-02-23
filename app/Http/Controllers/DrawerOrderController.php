@@ -10,6 +10,7 @@ use App\Models\DrawerProduct;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 use App\Models\DrawerWishlist as Wishlist;
+use App\Models\User;
 
 class DrawerOrderController extends Controller
 {
@@ -28,6 +29,10 @@ class DrawerOrderController extends Controller
 
     public function cart()
     {
+        // $user = Auth::user();
+        // $name = $user->user_billing_fname . ' ' . $user->user_billing_lname;
+        // $email = $user->user_email;
+        // return $name;
         $cities = City::distinct()->get(['city']);
         $basicData = session('basicDetail');
         $items = (is_null(session('items')) ? [] : session('items'));
@@ -55,6 +60,7 @@ class DrawerOrderController extends Controller
 
     public function placeOrder(Request $request)
     {
+        // return $request;
         $request->validate([
             'unit' => ['required'],
             'bottom_thickness_grain_direction' => ['required'],
@@ -71,7 +77,6 @@ class DrawerOrderController extends Controller
 
         $data = $this->createOrderSesion($request);
         $path = '/cart';
-
         if (!empty($request->wishlist_name)) {
             Wishlist::create([
                 'user_id' => auth()->id(),
@@ -189,7 +194,7 @@ class DrawerOrderController extends Controller
                 }
             }
 
-            $product = DrawerProduct::where('id', $request['product'][$key])->select('image', 'price', 'name')->first();
+            $product = DrawerProduct::where('id', $request['product'][$key])->select('image', 'price', 'name', 'code')->first();
 
             $item[] = [
                 'id' => $request['id'][$key],
@@ -299,7 +304,7 @@ class DrawerOrderController extends Controller
         $user->user_billing_company = $request->billing_company;
         $user->user_billing_fname = $request->billing_first_name;
         $user->user_billing_lname = $request->billing_last_name;
-        $user->user_billing_phone = $request->billing_company;
+        $user->user_billing_phone = $request->billing_phone;
         $user->user_billing_email = $request->billing_email;
         $user->user_billing_address = $request->billing_address;
         $user->user_billing_city = $request->billing_city;

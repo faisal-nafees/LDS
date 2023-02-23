@@ -28,25 +28,26 @@
                                                     <div class="form-group col-md-8" id="card-number-field">
                                                         <label for="cardNumber">Card Number</label>
                                                         <input type="text" class="form-control" id="cardNumber"
-                                                            name="cardNumber" required>
+                                                            name="cardNumber">
                                                     </div>
                                                     <div class="form-group CVV col-md-4">
                                                         <label for="cvv">CVV</label>
                                                         <input type="number" class="form-control" id="cvv"
-                                                            name="cvv" required>
+                                                            name="cvv">
                                                     </div>
                                                 </div>
                                                 <div class="row">
                                                     <div class="form-group col-md-8">
                                                         <label for="">Card Holder Name</label>
                                                         <input type="text" class="form-control" id="cvv"
-                                                            name="owner" required>
+                                                            name="owner">
                                                     </div>
                                                     <div class="form-group col-md-4">
                                                         <label for="amount">Amount</label>
                                                         <input type="number" class="form-control" id="amount"
                                                             name="amount" min="1"
-                                                            value="{{ session('billingDetails')['cart_total'] }}" readonly>
+                                                            value="{{ session('billingDetails')['cart_total'] }}"
+                                                            readonly>
                                                     </div>
                                                 </div>
                                                 <div class="row">
@@ -111,7 +112,7 @@
 
                                         <br />
                                         <div class="form-group" id="pay-now">
-                                            <button type="submit" class="btn btn-success themeButton"
+                                            <button type="button" class="btn btn-success themeButton"
                                                 id="confirm-purchase">Confirm Payment</button>
                                         </div>
                                         </form>
@@ -177,6 +178,42 @@
     </section>
 
     <x-frontend.section name='scripts'>
+        <script>
+            $("#confirm-purchase").click(function() {
+
+                // e.preventDefault();
+                // alert("hello");
+                let ccn = $("input[name='cardNumber']").val();
+                let cvv = $("input[name='cvv']").val();
+                let owner = $("input[name='owner']").val();
+                let address = $("input[name='address']").val();
+                let city = $("input[name='city']").val();
+                let postal_code = $("input[name='postal_code']").val();
+                let country = $("input[name='country']").val();
+                let state = $("input[name='state']").val();
+
+                if (ccn == '') {
+                    alert("Please enter Credit Card Number");
+                } else if (cvv == '') {
+                    alert("Please enter CVV");
+                } else if (owner == '') {
+                    alert("Please enter Card Holder Name");
+                } else if (address == '') {
+                    alert("Please enter Address");
+                } else if (city == '') {
+                    alert("Please enter City");
+                } else if (postal_code == '') {
+                    alert("Please enter Postal Code");
+                } else if (country == '') {
+                    alert("Please enter Country");
+                } else if (state == '') {
+                    alert("Please enter State");
+                }
+
+                $('form').submit();
+
+            });
+        </script>
     </x-frontend.section>
 
 </x-frontend.layout>

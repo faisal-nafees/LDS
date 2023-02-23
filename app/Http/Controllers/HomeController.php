@@ -10,11 +10,6 @@ use App\Models\DrawerWishlist as Wishlist;
 
 class HomeController extends Controller
 {
-    // public function __construct()
-    // {
-    //     // We set the guard api as default driver
-    //     auth()->setDefaultDriver('admin');
-    // }
 
     function index()
     {

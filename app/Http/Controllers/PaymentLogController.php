@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
+use Mail;
 use App\Models\Item;
 use App\Models\DrawerOrder;
 use App\Models\DrawerPayment;
@@ -153,6 +155,25 @@ class PaymentLogController extends Controller
         $request->session()->forget('billingDetails');
 
         $storage = true;
+
+        $order = DrawerOrder::where('order_id', $order_id)->first();
+        $user = Auth::user();
+        $name = $user->user_billing_fname . ' ' . $user->user_billing_lname;
+        $email = $user->user_email;
+
+        $data = [
+            'name'      => $name,
+            'subject'   => 'Sales Order',
+            'title'     => 'Sales Order',
+            'body'      => 'Your order placed successfully',
+            'email'     => $email,
+            'pdf_path'     => url('/') . '/' . $order->sales_invoice,
+        ];
+
+        $mailSend = Mail::send('email.salesEmail', $data, function ($message) use ($data) {
+            $message->to($data['email'], $data['name'])->subject($data['subject']);
+            $message->from('faisal.ansari362@gmail.com', 'Test');
+        });
         return redirect('/')->withSuccess('Order Placed Successfully!')->with('storage', $storage);
     }
 
@@ -190,6 +211,7 @@ class PaymentLogController extends Controller
             'reference_no' => session('billingDetails')['reference_number'],
             'data' => $data
         ];
+
 
         $order =  DrawerOrder::create($orderData);
 

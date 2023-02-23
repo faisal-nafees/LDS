@@ -170,6 +170,7 @@
                 </div>
             @endif
 
+
             <form method="POST" id="__orderForm" action="{{ route('place.order') }}" enctype="multipart/form-data">
                 @csrf
                 <div class="row">
@@ -696,6 +697,11 @@
     </section>
 
     <x-frontend.section name='scripts'>
+        @if (session('storage'))
+            <script>
+                localStorage.clear();
+            </script>
+        @endif
         <script>
             $.ajaxSetup({
                 headers: {

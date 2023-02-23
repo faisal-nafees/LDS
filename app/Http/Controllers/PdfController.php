@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\DrawerOrder;
 use PDF;
 use Illuminate\Http\Request;
 

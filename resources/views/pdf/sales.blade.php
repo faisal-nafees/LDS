@@ -21,7 +21,7 @@
                     <td style="max-width:50%; padding:10px 0; border-bottom:1px solid #ccc;">
                         <div>
                             <img src="{{ public_path('frontend/logo.jpg') }}" alt="">
-                            
+
                         </div>
                     </td>
                     <td style="max-width:50%; padding:10px 0; border-bottom:1px solid #ccc; text-align:right;">
@@ -418,7 +418,9 @@
                             <div style="font-size:0.8rem; margin-bottom:4px; color: #77787b padding:4px 10px;">
                                 {{ $item['product_name'] }}
                                 <br>
-                                Code: {{ $item['product_code'] }}
+                                @if (custom()->code == 1)
+                                    Code: {{ $item['product_code'] }}
+                                @endif
                             </div>
                         </td>
 
