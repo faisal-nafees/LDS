@@ -93,7 +93,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/checkout', [DrawerOrderController::class, 'checkoutForm'])->name('checkout.form');
     Route::get('/payment', [PaymentLogController::class, 'pay'])->name('pay');
     Route::post('/payment', [DrawerOrderController::class, 'payment'])->name('payment');
-    Route::get('/pay', [PaymentLogController::class, 'pay'])->name('pay');
+    Route::post('/pay', [PaymentLogController::class, 'pay'])->name('payStore');
     Route::post('/dopay/online', [PaymentLogController::class, 'handleonlinepay'])->name('dopay.online');
 
     // wishlist Route

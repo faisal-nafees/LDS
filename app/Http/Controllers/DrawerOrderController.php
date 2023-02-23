@@ -29,12 +29,9 @@ class DrawerOrderController extends Controller
 
     public function cart()
     {
-        // $user = Auth::user();
-        // $name = $user->user_billing_fname . ' ' . $user->user_billing_lname;
-        // $email = $user->user_email;
-        // return $name;
         $cities = City::distinct()->get(['city']);
         $basicData = session('basicDetail');
+        $additionalNote = session('additionalNote');
         $items = (is_null(session('items')) ? [] : session('items'));
 
         $comman_options_total = $basicData['bottom_thickness_grain_direction_price'] + $basicData['back_notch_drill_undermount_slide_price'] + $basicData['front_notch_undermount_slide_price'] + $basicData['bracket_price'];
@@ -54,7 +51,7 @@ class DrawerOrderController extends Controller
         }
 
 
-        return view('cart', compact('basicData', 'items', 'total_items', 'price', 'cities', 'comman_options_total'));
+        return view('cart', compact('basicData', 'items', 'total_items', 'price', 'cities', 'comman_options_total', 'additionalNote'));
     }
 
 
@@ -152,9 +149,9 @@ class DrawerOrderController extends Controller
         // Create Order
         foreach ($request['product'] as $key => $value) {
             $logoDesignPath = '';
-            $width = $request['width'][$key];
-            $height =  $request['height'][$key];
-            $depth =  $request['depth'][$key];
+            $width = $request['width'][$key] +  $request['width_in'][$key];
+            $height =  $request['height'][$key] +  $request['height_in'][$key];
+            $depth =  $request['depth'][$key] +  $request['depth_in'][$key];
 
             if ($request->unit == 'mm') {
                 $width = round($request['width'][$key] * 0.03937008, 2);
@@ -252,9 +249,10 @@ class DrawerOrderController extends Controller
 
     public function checkout(Request $request)
     {
-        $request->validate([
-            'city' => ['required']
-        ]);
+
+        // $request->validate([
+        //     'city' => ['required']
+        // ]);
 
         $data = [
             'city' => $request->city,
@@ -370,8 +368,10 @@ class DrawerOrderController extends Controller
     // calculate delivery fee
     public function deliveryFee(Request $request)
     {
+        $sessionEncode = json_encode(session('billingDetails'));
+        $sessionDecode = json_decode($sessionEncode, true);
         $city = $request->city;
-        $weight = $request->weight;
+        $weight = $sessionDecode['total_weight_lbs'];
         $air_factor  = $weight * 2.452256944;
         $couriers = City::where('city', $city)->get();
         $bourassa_price = 0;

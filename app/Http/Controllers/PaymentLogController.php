@@ -15,8 +15,23 @@ use Illuminate\Support\Facades\DB;
 class PaymentLogController extends Controller
 {
     // start page form after start
-    public function pay()
+    public function pay(Request $request)
     {
+        $request->validate([
+            'city' => ['required']
+        ]);
+        $data = [
+            'city' => $request->city,
+            'subtotal' => $request->subtotal,
+            'taxes' => $request->taxes,
+            'cart_total' => $request->cart_total,
+            'delivery_fee' => $request->delivery_fee,
+            'courier' => $request->courier,
+        ];
+        $old_data = session('billingDetails');
+        $new_data = array_merge($old_data, $data);
+        session(['billingDetails' => $new_data]);
+
         $months = [
             'Jan',
             'Feb',
@@ -42,9 +57,9 @@ class PaymentLogController extends Controller
     public function handleonlinepay(Request $request)
     {
         $input = $request->input();
-
+        // return session('billingDetails');
         /* Create a merchantAuthenticationType object with authentication details
-          retrieved from the constants file */
+        retrieved from the constants file */
         $merchantAuthentication = new AnetAPI\MerchantAuthenticationType();
 
         $merchantAuthentication->setName(env('MERCHANT_LOGIN_ID'));

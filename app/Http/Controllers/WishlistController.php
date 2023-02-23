@@ -30,6 +30,7 @@ class WishlistController extends Controller
     {
         $wishlist = Wishlist::findOrFail($id);
         session($wishlist->data);
+        // return session('additionalNote');
 
         return redirect('cart');
     }

@@ -1,7 +1,6 @@
 <x-frontend.layout>
 
 
-
     <section class="product-page-wrapper">
         <div class="container">
             <div class="row">
@@ -161,7 +160,7 @@
                             <div class="row">
                                 <div class="col-lg-5">
                                     <div class="c-p-btm-form">
-                                        <div class="form-group row">
+                                        {{-- <div class="form-group row">
                                             <label for="shippingcity" class="col-md-2 col-form-label">Shipping to
                                                 City:</label>
                                             <div class="col-md-10">
@@ -185,14 +184,15 @@
                                                     905.282.1722
                                                 </p>
                                             </div>
-                                        </div>
+                                        </div> --}}
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="from-md-txt">
                                                     <h5>Total Cubic Measurements <span>(10 lbs/p3)</span></h5>
                                                     <ul>
                                                         <li>Total :
-                                                            {{ round($cubicMesurement, 2) }} </li>
+                                                            {{ round($cubicMesurement, 2) }}
+                                                        </li>
                                                     </ul>
                                                 </div>
                                             </div>
@@ -212,7 +212,7 @@
                                         </div>
                                         <div class="form-group c-p-txtarea">
                                             <label for="cftxtarea"><b>Additional Notes:</b></label>
-                                            <textarea name="additional_note" onchange="getValue()" class="form-control" id="cftxtarea"></textarea>
+                                            <textarea name="additional_note" onchange="getValue()" class="form-control" id="cftxtarea">{{ $additionalNote }}</textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -222,10 +222,13 @@
 
                                             <li>Total Items <span>{{ $total_items }}</span></li>
                                             <li>Items Total <span>$ {{ $price }}</span></li>
-                                            <li>Delivery <span class="__deliveryFee"></span></li>
+                                            {{-- <li>Delivery <span class="__deliveryFee"></span></li> --}}
                                             <li>Subtotal <span class="__subtotal"> {{ $price }}</span></li>
-                                            <li>Taxes (ON 13%) <span class="__taxes"> ??</span></li>
-                                            <li><b>CART Total</b> <span class="__cartTotal">{{ $price }}</span>
+                                            <li>Taxes (ON 13%) <span class="__taxes">$
+                                                    {{ round($price * 0.13, 2) }}</span>
+                                            </li>
+                                            <li><b>CART Total</b> <span class="__cartTotal">$
+                                                    {{ round($price + $price * 0.13, 2) }}</span>
                                             </li>
 
                                             {{-- input fields --}}
@@ -243,8 +246,7 @@
                                                 value="{{ round($totalWeight, 2) }}" step="0.01">
                                             <input type="hidden" name="delivery_fee" class="__deliveryFeeInp"
                                                 step="0.01">
-                                            <input type="hidden" name="subtotal" class="__subtotalInp"
-                                                step="0.01">
+                                            <input type="hidden" name="subtotal" class="__subtotalInp" step="0.01">
                                             <input type="hidden" name="taxes" class="__taxesInp" step="0.01">
                                             <input type="hidden" name="cart_total" class="__cartTotalInp"
                                                 step="0.01">
@@ -380,10 +382,10 @@
                     data: {
                         id: id,
                         name: name,
-                        cart: 0
+                        cart: 0,
+
                     },
                     success: (response) => {
-                        console.log(response);
                         if (response.success == true) {
                             let msg = 'Wishlist already exists. Do you want to add number (' +
                                 response.number + ') to wishlist name?';
@@ -405,13 +407,16 @@
 
             function saveToWishlist(name) {
                 var id = '{{ auth()->id() }}';
+                let additional_note = $("#cftxtarea").val();
+                console.log(additional_note);
                 $.ajax({
                     type: 'get',
                     url: "{{ route('ajaxValidateWishlistName') }}",
                     data: {
                         id: id,
                         name: name,
-                        cart: 1
+                        cart: 1,
+                        additional_note: additional_note,
                     },
                     success: (response) => {
                         if (response.success == true) {
@@ -465,7 +470,11 @@
             }
 
             $(document).ready(function() {
-                $('#cftxtarea').val(localStorage.additional_note);
+                let an = $('#cftxtarea').val();
+                if (!an) {
+                    $('#cftxtarea').val(localStorage.additional_note)
+                }
+
             })
         </script>
     </x-frontend.section>

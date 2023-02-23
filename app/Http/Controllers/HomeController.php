@@ -168,8 +168,9 @@ class HomeController extends Controller
 
     public function ajaxValidateWishlistName(Request $request)
     {
+        session(['additional_note' => $request->additional_note]);
         if ($request->cart == 1) {
-            $data = ['basicDetail' => session('basicDetail'), 'items' => session('items')];
+            $data = ['basicDetail' => session('basicDetail'), 'items' => session('items'), 'additionalNote' => session('additional_note')];
             Wishlist::create([
                 'user_id' => $request->id,
                 'name' => $request->name,

@@ -913,11 +913,12 @@
                     </div>
 
                     <div class="wish-cart-btn">
-                        {{-- <button type="submit" name="action" value="wishlist"
+                        <input type="hidden" name="wishlist_name" id="wishlist_name">
+                        <button type="submit" name="action" value="wishlist"
                             class="btn-dovetail orderFormSubmitBtn wishlist-btn">Add
                             to
-                            Wishlist</button> --}}
-                        <button type="submit" name="action" class="btn-dovetail cart-btn">Proceed
+                            Wishlist</button>
+                        <button type="submit" name="action" class="btn-dovetail proceedToCart cart-btn">Proceed
                             to cart</button>
                     </div>
                 </div>
@@ -957,40 +958,67 @@
 
         </div>
         <!-- end: row -->
+        {{-- wishlist model form --}}
+        <div class="modal fade backnotch_modal" id="wishlistModel" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-row row">
+                            <label class="col-4">Wishlist Name:</label>
+                            <input type="text" id="val_wishlist_name" class="input-control col-6">
+                        </div>
+                        <button type="button" class="btn btn-sm btn-primary" id="validataWishlist">Save to
+                            Wishlist</button>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         </div>
     </section>
 
     <x-frontend.section name='scripts'>
         <script>
-            // ajax form validation 
-            $('#__orderEditForm').submit(function(e) {
+            // check which button is going to submit the form
+            $('.orderFormSubmitBtn').click(function(e) {
                 e.preventDefault();
-                let formData = new FormData(this);
+                $("#wishlistModel").modal('show');
+            });
 
+            $("#validataWishlist").click(function() {
+                var name = $('#val_wishlist_name').val();
+                var id = '{{ auth()->id() }}';
                 $.ajax({
-                    type: 'POST',
-                    url: "{{ route('ajaxOrderValidation') }}",
-                    data: formData,
-                    contentType: false,
-                    processData: false,
+                    type: 'get',
+                    url: "{{ route('ajaxValidateWishlistName') }}",
+                    data: {
+                        id: id,
+                        name: name,
+                        cart: 0
+                    },
                     success: (response) => {
                         if (response.success == true) {
-                            this.submit();
+                            let msg = 'Wishlist already exists. Do you want to add number (' +
+                                response.number + ') to wishlist name?';
+                            alert(msg);
+                            if (confirm(msg) == true) {
+                                $('#wishlist_name').val(name + ' (' + response.number + ')');
+                                $('#__orderEditForm').submit();
+                            }
+
                         } else {
-                            $('#wishlist_name').val('');
-                            $('#ajax-error').empty();
-                            response.errors.forEach(function(error, index) {
-                                $('#ajax-error').append(
-                                    '<div style="background: #FF5733; padding: 5px 10px; color:white;">' +
-                                    error + '</div>'
-                                );
-
-                                $('html, body').animate({
-                                    scrollTop: $("#ajax-error").offset().top
-                                }, 10);
-                            });
-
+                            $('#wishlist_name').val(name);
+                            $('#__orderEditForm').submit();
                         }
+
+                        $("#wishlistModel").modal('hide');
+
                     },
                     error: function(errors) {
                         console.log(errors);
@@ -998,6 +1026,43 @@
 
                 });
             });
+
+            // ajax form validation 
+            // $('#__orderEditForm').submit(function(e) {
+            //     e.preventDefault();
+            //     let formData = new FormData(this);
+
+            //     $.ajax({
+            //         type: 'POST',
+            //         url: "{{ route('ajaxOrderValidation') }}",
+            //         data: formData,
+            //         contentType: false,
+            //         processData: false,
+            //         success: (response) => {
+            //             if (response.success == true) {
+            //                 this.submit();
+            //             } else {
+            //                 $('#wishlist_name').val('');
+            //                 $('#ajax-error').empty();
+            //                 response.errors.forEach(function(error, index) {
+            //                     $('#ajax-error').append(
+            //                         '<div style="background: #FF5733; padding: 5px 10px; color:white;">' +
+            //                         error + '</div>'
+            //                     );
+
+            //                     $('html, body').animate({
+            //                         scrollTop: $("#ajax-error").offset().top
+            //                     }, 10);
+            //                 });
+
+            //             }
+            //         },
+            //         error: function(errors) {
+            //             console.log(errors);
+            //         }
+
+            //     });
+            // });
 
 
             function changeUnit(el) {
