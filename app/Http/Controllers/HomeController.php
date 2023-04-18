@@ -61,18 +61,56 @@ class HomeController extends Controller
         $request->validate([
             'option' => ['required'],
             'price' => ['required'],
-            'for' => ['required']
+            'for' => ['required'],
+            'code' => ['required']
         ]);
 
         $option = new SelectOption();
         $option->option = $request->option;
         $option->price = $request->price;
         $option->for = $request->for;
+        $option->code = $request->code;
 
 
         try {
             $option->save();
             return back()->withSuccess('New Option is added Successfully!');
+        } catch (\Exception $th) {
+            return back()->withErrors('Something Went Wrong! PLease Try Again!');
+        }
+    }
+
+    public function selectEditOptions(Request $request)
+    {
+        if ($request->ajax()) {
+
+            $option = SelectOption::find($request->id);
+            if ($option) {
+                return response()->json(['option' => $option]);
+            } else {
+                return response()->json(['error' => "Option Not Found!"]);
+            }
+        }
+    }
+
+    public function selectUpdateOptions(Request $request)
+    {
+        $request->validate([
+            'edit_option' => ['required'],
+            'edit_price' => ['required'],
+            'edit_for' => ['required'],
+            'edit_code' => ['required']
+        ]);
+
+        $option = SelectOption::find($request->id);
+        $option->option = $request->edit_option;
+        $option->price = $request->edit_price;
+        $option->for = $request->edit_for;
+        $option->code = $request->edit_code;
+
+        try {
+            $option->save();
+            return back()->withSuccess('Option is updated Successfully!');
         } catch (\Exception $th) {
             return back()->withErrors('Something Went Wrong! PLease Try Again!');
         }
@@ -168,9 +206,19 @@ class HomeController extends Controller
 
     public function ajaxValidateWishlistName(Request $request)
     {
+        $summary = [
+            'city' => $request->city,
+            'subtotal' => $request->subtotal, //
+            'taxes' => $request->taxes,
+            'cart_total' => $request->cart_total,
+            'delivery_fee' => $request->delivery_fee,
+            'courier' => $request->courier,
+        ];
+        session(['summaryBillingDetails' => $summary]);
+
         session(['additional_note' => $request->additional_note]);
         if ($request->cart == 1) {
-            $data = ['basicDetail' => session('basicDetail'), 'items' => session('items'), 'additionalNote' => session('additional_note')];
+            $data = ['basicDetail' => session('basicDetail'), 'billingDetails' => session('billingDetails'), 'items' => session('items'), 'additionalNote' => session('additional_note'), 'summaryBillingDetails' => session('summaryBillingDetails')];
             Wishlist::create([
                 'user_id' => $request->id,
                 'name' => $request->name,
@@ -180,6 +228,8 @@ class HomeController extends Controller
             session()->forget('basicDetail');
             session()->forget('items');
             session()->forget('billingDetails');
+            session()->forget('additional_note');
+            session()->forget('summaryBillingDetails');
 
             return response()->json([
                 'success' => true
@@ -187,7 +237,7 @@ class HomeController extends Controller
         }
 
 
-        $name = Wishlist::where('name', 'LIKE', '%' . $request->name . '%')->where('user_id', $request->id)->latest('id')->pluck('name')->first();
+        $name = Wishlist::where('name', $request->name)->where('user_id', $request->id)->latest('id')->pluck('name')->first();
         if (!is_null($name)) {
             preg_match('#\((.*?)\)#', $name, $val);
 

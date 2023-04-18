@@ -25,11 +25,11 @@
                         </div>
                     </td>
                     <td colspan="1" style="width:38%; padding:10px 0; border-bottom:1px solid #ccc;">
-                        <div style="font-size:0.8rem; font-weight:600; margin-bottom:4px; color: #77787b;"> DOVETAIL
-                            SALES ORDER #</div>
+                        <div style="font-size:0.8rem; font-weight:600; margin-bottom:4px; color: #77787b;"> DRAWER
+                            PURCHASE ORDER #</div>
                         <div style="font-size:0.8rem; margin-bottom:4px; color: #77787b;">
                             23-{{ $order_id }}-{{ $company }},
-                            PO {{ $po }} DSO </div>
+                            PO {{ $po }} DPO </div>
                         {{-- <div style="font-size:0.8rem; font-weight:600; margin-bottom:4px; color: #77787b;"> Page 1 of 3
                         </div> --}}
                     </td>
@@ -121,12 +121,7 @@
                     </td>
 
                     <td style="vertical-align:top; padding:10px 0; border-bottom:1px solid #ccc; width:25%;">
-                        <div style="font-size:0.8rem; font-weight:600; margin-bottom:4px; color: #008000;">
-                            Payment Method
-                        </div>
-                        <div style="font-size:0.8rem; font-weight:600; margin-bottom:4px; color: #008000;">
-                            Visa ending <br> with {{ $billingDetails['card_ending'] }}
-                        </div>
+
                     </td>
 
 
@@ -482,7 +477,7 @@
                                     </div>
                                 </div>
                             @endif
-                            @if (custom()->sales_order_code == 1)
+                            @if (custom()->purchase_order_code == 1)
                                 <div style="display: block;">
                                     <div
                                         style="font-size:0.8rem; font-weight:600; margin-bottom:4px; color: #77787b; display:inline-block">
@@ -500,24 +495,6 @@
                                     </div>
                                 </div>
                             @endif
-                            {{-- <div style="font-size:0.8rem; margin-bottom:4px; color: #77787b padding:4px 10px;">
-                                {{ $item['product_name'] }} <br>
-                                @if (!empty($item['product_name']))
-                                    <div
-                                        style="font-size:0.8rem; font-weight:600; margin-bottom:4px; color: #77787b; display:inline-block">
-                                        Codes:
-                                    </div>{{ $item['note'] }}
-                                @endif
-                                <br>
-                                @if (custom()->code == 1)
-                                    Code: {{ $item['product_code'] }},
-                                    {{ $basicData['bottom_thickness_grain_direction_code'] == 'None' ? '' : $basicData['bottom_thickness_grain_direction_code'] }},
-                                    {{ $basicData['back_notch_drill_undermount_slide_code'] == 'None' ? '' : $basicData['back_notch_drill_undermount_slide_code'] }},
-                                    {{ $basicData['front_notch_undermount_slide_code'] == 'None' ? '' : $basicData['front_notch_undermount_slide_code'] }},
-                                    {{ $basicData['bracket_code'] == 'None' ? '' : $basicData['bracket_code'] }},
-                                    {{ $basicData['logo_branded_code'] == 'None' ? '' : $basicData['logo_branded_code'] }}
-                                @endif
-                            </div> --}}
                         </td>
 
 
@@ -691,7 +668,6 @@
             </tbody>
 
         </table>
-
 
     </section>
 

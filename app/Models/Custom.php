@@ -10,6 +10,6 @@ class Custom extends Model
     use HasFactory;
 
     protected $fillable = [
-        'code', 'markup_price'
+        'online_sequence_code', 'sales_order_code', 'purchase_order_code', 'packing_slip_code', 'markup_price'
     ];
 }

@@ -46,7 +46,7 @@
                                                         <label for="amount">Amount</label>
                                                         <input type="number" class="form-control" id="amount"
                                                             name="amount" min="1"
-                                                            value="{{ session('billingDetails')['cart_total'] }}"
+                                                            value="{{ session('summaryBillingDetails')['cart_total'] ? session('summaryBillingDetails')['cart_total'] : session('billingDetails')['cart_total'] }}"
                                                             readonly>
                                                     </div>
                                                 </div>
@@ -208,9 +208,11 @@
                     alert("Please enter Country");
                 } else if (state == '') {
                     alert("Please enter State");
+                } else {
+
+                    $('form').submit();
                 }
 
-                $('form').submit();
 
             });
         </script>

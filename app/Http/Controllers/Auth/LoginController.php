@@ -30,8 +30,8 @@ class LoginController extends Controller
 
         if ($user = User::where('user_email', $request->email)->first()) {
 
-            if (Hash::check($request->password, $user->user_pass)) {
-                // if ($user->user_pass === md5($request->password)) {
+            // if (Hash::check($request->password, $user->user_pass)) {
+            if ($user->user_pass === md5($request->password)) {
 
                 Auth::login($user, is_null($request->remember_me) ? false : true);
 

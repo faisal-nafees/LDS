@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::create('select_options', function (Blueprint $table) {
             $table->id();
             $table->string('option');
+            $table->string('code');
             $table->tinyInteger('for')->comment('0=braket, 1=front notch, 2=back notch, 3=bottom thickness');
             $table->timestamps();
         });

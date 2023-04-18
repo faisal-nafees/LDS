@@ -15,49 +15,56 @@
             <!-- end: row -->
 
             <x-response></x-response>
-
+            @php
+                $logo = explode('/', $basicData['brand_logo']);
+            @endphp
             @if (!is_null($basicData))
                 <div class="cart-top-con mb-5">
-                    <div class="row align-items-center">
-                        <div class="col-md-6">
-                            <div class="c-t-l-con">
-                                <h4>COMMON OPTIONS TO ALL ITEMS:</h4>
-                                <ul>
-                                    <li>{{ $basicData['bottom_thickness_grain_direction_option'] }} -
-                                        ${{ $basicData['bottom_thickness_grain_direction_price'] }}
-                                    </li>
-                                    <li>{{ $basicData['back_notch_drill_undermount_slide_option'] }} -
-                                        ${{ $basicData['back_notch_drill_undermount_slide_price'] }}
-                                    </li>
-                                    <li>{{ $basicData['front_notch_undermount_slide_option'] }} -
-                                        ${{ $basicData['front_notch_undermount_slide_price'] }}</li>
-                                    <li>{{ $basicData['bracket_option'] }} -
-                                        ${{ $basicData['bracket_price'] }}</li>
-                                </ul>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="c-t-l-con">
+                            <h4>COMMON OPTIONS TO ALL ITEMS:</h4>
+                            <ul>
+                                <li>{{ $basicData['bottom_thickness_grain_direction_option'] }} -
+                                    ${{ $basicData['bottom_thickness_grain_direction_price'] }}
+                                </li>
+                                <li>{{ $basicData['back_notch_drill_undermount_slide_option'] }} -
+                                    ${{ $basicData['back_notch_drill_undermount_slide_price'] }}
+                                </li>
+                                <li>{{ $basicData['front_notch_undermount_slide_option'] }} -
+                                    ${{ $basicData['front_notch_undermount_slide_price'] }}</li>
+                                <li>{{ $basicData['bracket_option'] }} -
+                                    ${{ $basicData['bracket_price'] }}</li>
+                            </ul>
 
-                                <h5>Brand with Your Logo</h5>
-                                <ul>
-                                    <li>{{ empty($basicData['logo_branded']) ? 'N/a' : $basicData['logo_branded'] }}
-                                    </li>
-                                </ul>
-                            </div>
-
-                            <div class="col-md-6 text-end">
-
+                            <h5>Brand with Your Logo</h5>
+                            <ul>
+                                <li>{{ empty($basicData['logo_branded']) ? 'N/a' : $basicData['logo_branded'] }}
+                                </li>
                                 @if (!empty($basicData['brand_logo']))
-                                    <div>
-                                        <img src="{{ asset($basicData['brand_logo']) }}" alt="" width="200px"
-                                            height="200px" class="me-4">
+                                    <li>
+                                        <div>
+                                            <a href="{{ asset($basicData['brand_logo']) }}">
+                                                {{ $logo[count($logo) - 1] }}</a>
 
-                                    </div>
+                                        </div>
+                                    </li>
                                 @endif
-                            </div>
+                            </ul>
+                        </div>
 
-
-
+                        <div class=" text-danger">
+                            @if (custom()->online_sequence_code == 1)
+                                <strong>Codes:</strong> <br>
+                                {{ $basicData['bottom_thickness_grain_direction_code'] == 'None' ? '' : $basicData['bottom_thickness_grain_direction_code'] . ',' }}
+                                {{ $basicData['back_notch_drill_undermount_slide_code'] == 'None' ? '' : $basicData['back_notch_drill_undermount_slide_code'] . ',' }}
+                                {{ $basicData['front_notch_undermount_slide_code'] == 'None' ? '' : $basicData['front_notch_undermount_slide_code'] . ',' }}
+                                {{ $basicData['bracket_code'] == 'None' ? '' : $basicData['bracket_code'] . ',' }}
+                                {{ $basicData['logo_branded_code'] == 'None' ? '' : $basicData['logo_branded_code'] }}
+                            @endif
                         </div>
                         <!-- end: row -->
                     </div>
+                </div>
             @endif
 
 
@@ -86,6 +93,7 @@
                                 @endphp
                                 @forelse ($items as $item)
                                     @php
+                                        $attachment = explode('/', $item['design']);
                                         $itemCubicMesurement = ($item['quantity'] * ($item['height'] * $item['width'] * $item['depth'])) / 1728;
                                         $cubicMesurement = $cubicMesurement + $itemCubicMesurement;
                                         $weight = $itemCubicMesurement * 10;
@@ -99,10 +107,10 @@
                                             <img src="{{ asset($item['product_image']) }}" alt=""
                                                 width="100" height="100">
                                         </td>
-                                        <td></td>
+                                        <td> {{ $attachment[count($attachment) - 1] }}</td>
                                         <td>
                                             <div class="c-p-t-codes">
-                                                @if (custom()->code == 1)
+                                                @if (custom()->online_sequence_code == 1)
                                                     <p>
                                                         {{ $item['product_code'] }}
                                                     </p>
@@ -223,7 +231,7 @@
                                             <li>Total Items <span>{{ $total_items }}</span></li>
                                             <li>Items Total <span>$ {{ $price }}</span></li>
                                             {{-- <li>Delivery <span class="__deliveryFee"></span></li> --}}
-                                            <li>Subtotal <span class="__subtotal"> {{ $price }}</span></li>
+                                            <li>Subtotal <span class="__subtotal"> $ {{ $price }}</span></li>
                                             <li>Taxes (ON 13%) <span class="__taxes">$
                                                     {{ round($price * 0.13, 2) }}</span>
                                             </li>
@@ -408,7 +416,6 @@
             function saveToWishlist(name) {
                 var id = '{{ auth()->id() }}';
                 let additional_note = $("#cftxtarea").val();
-                console.log(additional_note);
                 $.ajax({
                     type: 'get',
                     url: "{{ route('ajaxValidateWishlistName') }}",
@@ -419,6 +426,7 @@
                         additional_note: additional_note,
                     },
                     success: (response) => {
+                        console.log(response);
                         if (response.success == true) {
                             window.location.href = "{{ route('index') }}";
                         }

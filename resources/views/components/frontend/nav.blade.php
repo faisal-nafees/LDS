@@ -17,13 +17,15 @@
                           <ul>
                               <li><a href="javascript:void(0);">SHOP</a>
                                   <ul>
-                                      <li> <a href="https://store.mdfcabinetdoors.ca/">Doors and Drawer
+                                      <li><a href="https://store.mdfcabinetdoors.ca/">Doors and Drawer
                                               Fronts</a>
                                       </li>
-                                      <li> <a href="{{ route('index') }}">Dovetail Drawers and Drawer Inserts </a> </li>
+                                      <li><a href="{{ route('index') }}" style="left: -10px;">Dovetail Drawers and
+                                              Drawer
+                                              Inserts </a> </li>
                                   </ul>
                               </li>
-                              <li><a href="{{ route('account') }}""> MY ACCOUNT </a> </li>
+                              <li><a href="{{ route('account') }}"> MY ACCOUNT </a> </li>
                               <li><a href="{{ route('faq') }}">FAQ</a></li>
                               <li><a href="{{ route('terms') }}">TERMS</a></li>
                               <li><a href="{{ route('contact') }}">CONTACT</a></li>

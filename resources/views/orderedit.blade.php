@@ -991,6 +991,75 @@
                 $("#wishlistModel").modal('show');
             });
 
+            $('.proceedToCart').click(function(e) {
+                e.preventDefault();
+                let h = $('input[name="height[]"]').map(function() {
+                    return $(this).val();
+                }).get();
+                let w = $('input[name="width[]"]').map(function() {
+                    return $(this).val();
+                }).get();
+                let d = $('input[name="depth[]"]').map(function() {
+                    return $(this).val();
+                }).get();
+                var formCondition = true;
+                if ($('#__unit').val() == 'in') {
+
+                    for (let i = 0; i < h.length; i++) {
+                        if (!($('#heightDiv' + (i + 1)).css("visibility") == "hidden")) {
+
+                            if (h[i] <= 0 || h[i] > 12) {
+                                alert('Maximum Height is 12"');
+                                formCondition = false;
+                            } else if (w[i] <= 0 || w[i] > 47.5) {
+                                alert('Maximum Width is 47.5"');
+                                formCondition = false;
+
+                            } else if (d[i] <= 0 || d[i] > 47.5) {
+                                alert('Maximum Depth is 47.5"');
+                                formCondition = false;
+
+                            } else if (w[i] > 32 && d[i] > 32) {
+                                alert('Max material size is 47.5" * 32" \nor\nMax material size is 32" * 47.5"');
+                                formCondition = false;
+                            }
+                        }
+
+                    }
+                } else {
+                    for (let i = 0; i < h.length; i++) {
+                        if (!($('#heightDiv' + (i + 1)).css("visibility") == "hidden")) {
+                            if (h[i] <= 0 || h[i] > 304.8) {
+                                alert('Maximum Height is 304.8mm');
+                                formCondition = false;
+                            } else if (w[i] <= 0 || w[i] > 1206.5) {
+                                alert('Maximum Width is 1206.5mm');
+                                formCondition = false;
+
+                            } else if (d[i] <= 0 || d[i] > 1206.5) {
+                                alert('Maximum Depth is 1206.5mm');
+                                formCondition = false;
+
+                            } else if (w[i] > 812.8 && d[i] > 812.8) {
+                                alert(
+                                    'Max material size is 1206.5mm * 812.8mm \nor\nMax material size is 812.8mm * 1206.5mm'
+                                );
+                                formCondition = false;
+                            }
+                        }
+                    }
+                }
+
+                if (formCondition) {
+                    $('form').submit();
+                }
+
+
+
+
+
+            });
+
             $("#validataWishlist").click(function() {
                 var name = $('#val_wishlist_name').val();
                 var id = '{{ auth()->id() }}';

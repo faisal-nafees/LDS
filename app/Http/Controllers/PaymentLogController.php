@@ -17,6 +17,7 @@ class PaymentLogController extends Controller
     // start page form after start
     public function pay(Request $request)
     {
+        // return $request;
         $request->validate([
             'city' => ['required']
         ]);
@@ -31,6 +32,7 @@ class PaymentLogController extends Controller
         $old_data = session('billingDetails');
         $new_data = array_merge($old_data, $data);
         session(['billingDetails' => $new_data]);
+        // return session('billingDetails');
 
         $months = [
             'Jan',
@@ -57,7 +59,13 @@ class PaymentLogController extends Controller
     public function handleonlinepay(Request $request)
     {
         $input = $request->input();
-        // return session('billingDetails');
+        $data = [
+            'card_ending' => substr($request->cardNumber, -4),
+        ];
+        $old_data = session('billingDetails');
+        $new_data = array_merge($old_data, $data);
+        session(['billingDetails' => $new_data]);
+
         /* Create a merchantAuthenticationType object with authentication details
         retrieved from the constants file */
         $merchantAuthentication = new AnetAPI\MerchantAuthenticationType();
@@ -168,6 +176,8 @@ class PaymentLogController extends Controller
         $request->session()->forget('basicDetail');
         $request->session()->forget('items');
         $request->session()->forget('billingDetails');
+        session()->forget('additional_note');
+        session()->forget('summaryBillingDetails');
 
         $storage = true;
 
@@ -175,20 +185,37 @@ class PaymentLogController extends Controller
         $user = Auth::user();
         $name = $user->user_billing_fname . ' ' . $user->user_billing_lname;
         $email = $user->user_email;
-
+        $company = $user->user_billing_company;
+        $po = $user->user_billing_po;
         $data = [
             'name'      => $name,
+            'company'      => $company,
+            'po'      => $po,
+            'order_id'      => $order_id,
             'subject'   => 'Sales Order',
-            'title'     => 'Sales Order',
-            'body'      => 'Your order placed successfully',
+            'date' => $order->created_at,
             'email'     => $email,
             'pdf_path'     => url('/') . '/' . $order->sales_invoice,
         ];
 
-        $mailSend = Mail::send('email.salesEmail', $data, function ($message) use ($data) {
+        Mail::send('email.customerEmail', $data, function ($message) use ($data) {
             $message->to($data['email'], $data['name'])->subject($data['subject']);
-            $message->from('faisal.ansari362@gmail.com', 'Test');
         });
+
+        $data1 = [
+            'subject'   => 'Purchase Order',
+            'title'     => 'Purchase Order',
+            'body'      => $name . 'order placed successfully',
+            'email'     => 'desciple2000@gmail.com',
+            // 'email'     => 'faisalnafees739@gmail.com',
+            'sales_pdf_path'     => url('/') . '/' . $order->sales_invoice,
+            'purchase_pdf_path'     => url('/') . '/' . $order->invoice,
+        ];
+
+        Mail::send('email.adminEmail', $data1, function ($message) use ($data1) {
+            $message->to($data1['email'], $data1['body'])->subject($data1['subject']);
+        });
+
         return redirect('/')->withSuccess('Order Placed Successfully!')->with('storage', $storage);
     }
 
@@ -211,7 +238,7 @@ class PaymentLogController extends Controller
             'logo_branded' => session()->get('basicDetail.logo_branded'),
             'brand_logo' => session()->get('basicDetail.brand_logo'),
             'status' => 2,
-            'invoice' => PdfController::createSalesInvoice($order_id),
+            'invoice' => PdfController::createPurchaseInvoice($order_id),
             'sales_invoice' => PdfController::createSalesInvoice($order_id),
             'slip' => PdfController::createSlip($order_id),
             'total' => $total,

@@ -10,6 +10,6 @@ class SelectOption extends Model
     use HasFactory;
 
     protected $fillable = [
-        'option', 'price', 'for'
+        'option', 'price', 'for', 'code'
     ];
 }

@@ -48,7 +48,7 @@
     <script src="{{ URL::asset('public/frontend/js/bootstrap.min.js') }}"></script>
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="{{ URL::asset('public/frontend/js/plugins.js') }}"></script>
-    <script src="{{ URL::asset('public/frontend/js/nice-select.min.js') }}"></script>
+    {{-- <script src="{{ URL::asset('public/frontend/js/nice-select.min.js') }}"></script> --}}
     <script src="{{ URL::asset('public/frontend/js/jquery.magnific-popup.min.js') }}"></script>
     <script src="{{ URL::asset('public/frontend/js/main.js') }}"></script>
 

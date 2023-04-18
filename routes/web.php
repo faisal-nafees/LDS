@@ -34,11 +34,14 @@ use App\Models\DrawerProduct;
 |
 */
 
+Route::get('/pdf/{id}', [PdfController::class, 'createSalesInvoice']);
 
 // Authenticated Admin Routes
 Route::middleware('auth:admin')->group(function () {
     Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
     Route::post('select/option', [HomeController::class, 'selectOptions'])->name('select.option');
+    Route::post('select/editOption', [HomeController::class, 'selectEditOptions'])->name('select.editOption');
+    Route::post('select/updateOption', [HomeController::class, 'selectUpdateOptions'])->name('select.updateOption');
     Route::delete('select/option/{id}', [HomeController::class, 'selectOptionDestroy'])->name('select.option.destroy');
 
 
@@ -80,6 +83,7 @@ Route::middleware('auth')->group(function () {
     Route::get('item/remove/{id}/', [DrawerOrderController::class, 'removeItem'])->name('remove.item');
     Route::post('place-order/update', [DrawerOrderController::class, 'placeOrderUpdate'])->name('place.order.update');
     Route::get('cart', [DrawerOrderController::class, 'cart'])->name('cart');
+    Route::post('cart', [DrawerOrderController::class, 'backCart'])->name('backCart');
 
     // account
     Route::get('/account', [CustomerController::class, 'index'])->name('account');
@@ -91,7 +95,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/summary', [DrawerOrderController::class, 'summary'])->name('summary');
     Route::post('/checkout', [DrawerOrderController::class, 'checkout'])->name('checkout');
     Route::get('/checkout', [DrawerOrderController::class, 'checkoutForm'])->name('checkout.form');
-    Route::get('/payment', [PaymentLogController::class, 'pay'])->name('pay');
+    // Route::get('/payment', [PaymentLogController::class, 'pay'])->name('pay');
     Route::post('/payment', [DrawerOrderController::class, 'payment'])->name('payment');
     Route::post('/pay', [PaymentLogController::class, 'pay'])->name('payStore');
     Route::post('/dopay/online', [PaymentLogController::class, 'handleonlinepay'])->name('dopay.online');

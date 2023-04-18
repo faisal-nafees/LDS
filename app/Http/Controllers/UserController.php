@@ -62,10 +62,10 @@ class UserController extends Controller
         $user->user_billing_phone    =   $request->billing_phone;
 
         DB::beginTransaction();
-
         try {
 
             $user->save();
+
 
             DB::commit();
 

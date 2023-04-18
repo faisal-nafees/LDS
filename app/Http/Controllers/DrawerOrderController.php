@@ -11,6 +11,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Validator;
 use App\Models\DrawerWishlist as Wishlist;
 use App\Models\User;
+use Illuminate\Support\Str;
 
 class DrawerOrderController extends Controller
 {
@@ -20,11 +21,12 @@ class DrawerOrderController extends Controller
         $cities = City::distinct()->get(['city']);
         $basicData = session('basicDetail');
         $billingDetails = session('billingDetails');
+        $summaryBillingDetails = session('summaryBillingDetails');
         $items = (is_null(session('items')) ? [] : session('items'));
         $comman_options_total = $basicData['bottom_thickness_grain_direction_price'] + $basicData['back_notch_drill_undermount_slide_price'] + $basicData['front_notch_undermount_slide_price'] + $basicData['bracket_price'];
 
-
-        return view('summary', compact('basicData', 'items', 'billingDetails', 'comman_options_total', 'cities'));
+        // return $summaryBillingDetails;
+        return view('summary', compact('basicData', 'items', 'billingDetails', 'comman_options_total', 'cities', 'summaryBillingDetails'));
     }
 
     public function cart()
@@ -33,6 +35,7 @@ class DrawerOrderController extends Controller
         $basicData = session('basicDetail');
         $additionalNote = session('additionalNote');
         $items = (is_null(session('items')) ? [] : session('items'));
+        // return $items;
 
         $comman_options_total = $basicData['bottom_thickness_grain_direction_price'] + $basicData['back_notch_drill_undermount_slide_price'] + $basicData['front_notch_undermount_slide_price'] + $basicData['bracket_price'];
 
@@ -57,6 +60,7 @@ class DrawerOrderController extends Controller
 
     public function placeOrder(Request $request)
     {
+
         // return $request;
         $request->validate([
             'unit' => ['required'],
@@ -121,6 +125,8 @@ class DrawerOrderController extends Controller
             session()->forget('basicDetail');
             session()->forget('items');
             session()->forget('billingDetails');
+            session()->forget('additional_note');
+            session()->forget('summaryBillingDetails');
 
             $path = '/';
         } else {
@@ -212,6 +218,15 @@ class DrawerOrderController extends Controller
                 'additional_depth' => $request->additional_depth,
             ];
         }
+        $logo_branded_code = '';
+        if (Str::contains($request->logo_branded, 'ESX')) {
+            $logo_branded_code = 'ESX';
+        } else if (Str::contains($request->logo_branded, 'ESI')) {
+            $logo_branded_code = 'ESI';
+        } else {
+            $logo_branded_code = 'None';
+        };
+
 
         // storing data into session
         $basicData = [
@@ -219,17 +234,22 @@ class DrawerOrderController extends Controller
             'bottom_thickness_grain_direction_id' => $request->bottom_thickness_grain_direction,
             'bottom_thickness_grain_direction_option' => $this->getSelectedOptionsValues($request->bottom_thickness_grain_direction, 'option'),
             'bottom_thickness_grain_direction_price' => $this->getSelectedOptionsValues($request->bottom_thickness_grain_direction, 'price'),
+            'bottom_thickness_grain_direction_code' => $this->getSelectedOptionsValues($request->bottom_thickness_grain_direction, 'code'),
             'back_notch_drill_undermount_slide_id' => $request->back_notch_drill_undermount_slide,
             'back_notch_drill_undermount_slide_option' => $this->getSelectedOptionsValues($request->back_notch_drill_undermount_slide, 'option'),
             'back_notch_drill_undermount_slide_price' => $this->getSelectedOptionsValues($request->back_notch_drill_undermount_slide, 'price'),
+            'back_notch_drill_undermount_slide_code' => $this->getSelectedOptionsValues($request->back_notch_drill_undermount_slide, 'code'),
             'front_notch_undermount_slide_id' => $request->front_notch_undermount_slide,
             'front_notch_undermount_slide_option' => $this->getSelectedOptionsValues($request->front_notch_undermount_slide, 'option'),
             'front_notch_undermount_slide_price' => $this->getSelectedOptionsValues($request->front_notch_undermount_slide, 'price'),
+            'front_notch_undermount_slide_code' => $this->getSelectedOptionsValues($request->front_notch_undermount_slide, 'code'),
             'bracket_id' => $request->bracket,
             'bracket_option' => $this->getSelectedOptionsValues($request->bracket, 'option'),
             'bracket_price' => $this->getSelectedOptionsValues($request->bracket, 'price'),
+            'bracket_code' => $this->getSelectedOptionsValues($request->bracket, 'code'),
 
             'logo_branded' => $request->logo_branded,
+            'logo_branded_code' => $logo_branded_code,
             'brand_logo' => $logoFilePath
         ];
 
@@ -243,33 +263,63 @@ class DrawerOrderController extends Controller
         }
 
         $user = auth()->user();
+        $billingDetails = session('billingDetails');
 
-        return view('checkout', compact('user'));
+
+        return view('checkout', compact(['user', 'billingDetails']));
     }
 
     public function checkout(Request $request)
     {
+        // return session('billingDetails')['city'];
+        // if (!session('billingDetails')) {
+        // }
 
-        // $request->validate([
-        //     'city' => ['required']
-        // ]);
+        if (!session('billingDetails')) {
+            $data = [
+                'city' => $request->city,
+                'additional_note' => $request->additional_note,
+                'quantity' => $request->quantity,
+                'total' => $request->total,
+                'total_cubic_measurement' => $request->total_cubic_measurement,
+                'total_weight_kg' => $request->total_weight_kg,
+                'total_weight_lbs' => $request->total_weight_lbs,
+                'comman_options_total' => $request->comman_options_total,
+                'subtotal' => $request->subtotal,
+                'taxes' => $request->taxes,
+                'cart_total' => $request->cart_total,
+                'delivery_fee' => $request->delivery_fee,
+                'courier' => $request->courier,
+            ];
 
-        $data = [
-            'city' => $request->city,
-            'additional_note' => $request->additional_note,
-            'quantity' => $request->quantity,
-            'total' => $request->total,
-            'total_cubic_measurement' => $request->total_cubic_measurement,
-            'total_weight_kg' => $request->total_weight_kg,
-            'total_weight_lbs' => $request->total_weight_lbs,
-            'comman_options_total' => $request->comman_options_total,
-            'subtotal' => $request->subtotal,
-            'taxes' => $request->taxes,
-            'cart_total' => $request->cart_total,
-            'delivery_fee' => $request->delivery_fee,
-            'courier' => $request->courier,
-        ];
-        session(['billingDetails' => $data]);
+            session(['billingDetails' => $data]);
+            $old_data = session('billingDetails');
+            $new_data = array_merge($old_data, $data);
+            session(['billingDetails' => $new_data]);
+        } else {
+            $data = [
+                'city' => session('billingDetails')['city'],
+                'additional_note' => $request->additional_note,
+                'quantity' => $request->quantity,
+                'total' => $request->total,
+                'total_cubic_measurement' => $request->total_cubic_measurement,
+                'total_weight_kg' => $request->total_weight_kg,
+                'total_weight_lbs' => $request->total_weight_lbs,
+                'comman_options_total' => $request->comman_options_total,
+                'subtotal' => session('billingDetails')['subtotal'],
+                'taxes' => session('billingDetails')['taxes'],
+                'cart_total' => session('billingDetails')['cart_total'],
+                'delivery_fee' => session('billingDetails')['delivery_fee'],
+                'courier' => session('billingDetails')['courier'],
+            ];
+
+            session(['billingDetails' => $data]);
+            $old_data = session('billingDetails');
+            $new_data = array_merge($old_data, $data);
+            session(['billingDetails' => $new_data]);
+        }
+
+        session(['additional_note' => $request->additional_note]);
 
         return redirect('/checkout');
     }
@@ -278,6 +328,7 @@ class DrawerOrderController extends Controller
     {
         // return $request;
         $user = auth()->user();
+        // return $user;
 
         $request->validate([
             'reference_number' => ['required'],
@@ -329,11 +380,31 @@ class DrawerOrderController extends Controller
             'billing_postal_code' => $request->billing_postal_code,
             'billing_country' => $request->billing_country,
         ];
+        // return $data;
+        if (!session('summaryBillingDetails')) {
 
+            $summary = [
+                'city' => '',
+                'subtotal' => '', //
+                'taxes' => '',
+                'cart_total' => '',
+                'delivery_fee' => '',
+                'courier' => '',
+            ];
+            session(['summaryBillingDetails' => $summary]);
+        }
+
+        // return session('summaryBillingDetails');
         $old_data = session('billingDetails');
-        $new_data = array_merge($old_data, $data);
+        if ($old_data) {
 
-        session(['billingDetails' => $new_data]);
+            $new_data = array_merge($old_data, $data);
+            session(['billingDetails' => $new_data]);
+        } else {
+            session(['billingDetails' => $data]);
+        }
+
+        $billingDetails = session('billingDetails');
 
         return redirect('/summary');
     }
@@ -368,10 +439,19 @@ class DrawerOrderController extends Controller
     // calculate delivery fee
     public function deliveryFee(Request $request)
     {
-        $sessionEncode = json_encode(session('billingDetails'));
-        $sessionDecode = json_decode($sessionEncode, true);
+        // session('summaryBillingDetails')['cart_total'] = '';
+        $data = [
+            'cart_total' => null,
+        ];
+        $old_data = session('summaryBillingDetails');
+        $new_data = array_merge($old_data, $data);
+        session(['summaryBillingDetails' => $new_data]);
+
+        // $sessionEncode = json_encode(session('billingDetails'));
+        // $sessionDecode = json_decode($sessionEncode, true);
         $city = $request->city;
-        $weight = $sessionDecode['total_weight_lbs'];
+        // $weight = $sessionDecode['total_weight_lbs'];
+        $weight = session('billingDetails')['total_weight_lbs'];
         $air_factor  = $weight * 2.452256944;
         $couriers = City::where('city', $city)->get();
         $bourassa_price = 0;
@@ -428,5 +508,10 @@ class DrawerOrderController extends Controller
         ];
 
         return json_encode($data);
+    }
+
+    public function backCart(Request $request)
+    {
+        return 1;
     }
 }

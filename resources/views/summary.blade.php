@@ -17,38 +17,51 @@
             <!-- end: row -->
 
             <x-response></x-response>
-
+            @php
+                $values = explode('/', $basicData['brand_logo']);
+            @endphp
             @if (!is_null($basicData))
                 <div class="cart-top-con">
-                    <div class="row align-items-center">
-                        <div class="col-md-6">
-                            <div class="c-t-l-con">
-                                <h4>COMMON OPTIONS TO ALL ITEMS:</h4>
-                                <ul>
-                                    <li>{{ $basicData['bottom_thickness_grain_direction_option'] }}
-                                    </li>
-                                    <li>{{ $basicData['back_notch_drill_undermount_slide_option'] }}
-                                    </li>
-                                    <li>{{ $basicData['front_notch_undermount_slide_option'] }}</li>
-                                    <li>{{ $basicData['bracket_option'] }}</li>
-                                </ul>
-                                <h5>Brand with Your Logo</h5>
-                                <ul>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="c-t-l-con">
+                            <h4>COMMON OPTIONS TO ALL ITEMS:</h4>
+                            <ul>
+                                <li>{{ $basicData['bottom_thickness_grain_direction_option'] }}
+                                </li>
+                                <li>{{ $basicData['back_notch_drill_undermount_slide_option'] }}
+                                </li>
+                                <li>{{ $basicData['front_notch_undermount_slide_option'] }}</li>
+                                <li>{{ $basicData['bracket_option'] }}</li>
+                            </ul>
+                            <h5>Brand with Your Logo</h5>
+                            <ul>
+                                <li>
+                                    {{ empty($basicData['logo_branded']) ? 'N/a' : $basicData['logo_branded'] }}
+                                </li>
+                                @if (!empty($basicData['brand_logo']))
                                     <li>
-                                        {{ empty($basicData['logo_branded']) ? 'N/a' : $basicData['logo_branded'] }}
+                                        <div>
+                                            {{-- <img src="{{ asset($basicData['brand_logo']) }}" alt=""
+                                                    width="200px" height="200px"> --}}
+                                            <a href="{{ asset($basicData['brand_logo']) }}">
+                                                {{ $values[count($values) - 1] }}</a>
+
+                                        </div>
                                     </li>
-                                </ul>
+                                @endif
+                            </ul>
 
 
-                            </div>
                         </div>
-                        <div class="col-md-6 ">
-                            @if (!empty($basicData['brand_logo']))
-                                <div>
-                                    <img src="{{ asset($basicData['brand_logo']) }}" alt="" width="200px"
-                                        height="200px">
 
-                                </div>
+                        <div class="text-danger">
+                            @if (custom()->online_sequence_code == 1)
+                                <strong>Codes:</strong> <br>
+                                {{ $basicData['bottom_thickness_grain_direction_code'] == 'None' ? '' : $basicData['bottom_thickness_grain_direction_code'] . ',' }}
+                                {{ $basicData['back_notch_drill_undermount_slide_code'] == 'None' ? '' : $basicData['back_notch_drill_undermount_slide_code'] . ',' }}
+                                {{ $basicData['front_notch_undermount_slide_code'] == 'None' ? '' : $basicData['front_notch_undermount_slide_code'] . ',' }}
+                                {{ $basicData['bracket_code'] == 'None' ? '' : $basicData['bracket_code'] . ',' }}
+                                {{ $basicData['logo_branded_code'] == 'None' ? '' : $basicData['logo_branded_code'] }}
                             @endif
                         </div>
 
@@ -82,6 +95,7 @@
                                 @endphp
                                 @forelse ($items as $item)
                                     @php
+                                        $attachment = explode('/', $item['design']);
                                         $price = $comman_options_total + $item['price'];
                                         $itemCubicMesurement = ($item['quantity'] * ($item['height'] * $item['width'] * $item['depth'])) / 1728;
                                         $cubicMesurement = $cubicMesurement + $itemCubicMesurement;
@@ -95,10 +109,10 @@
                                             <img src="{{ asset($item['product_image']) }}" alt=""
                                                 width="100" height="100">
                                         </td>
-                                        <td>{{ __('n/a') }}</td>
+                                        <td>{{ $attachment[count($attachment) - 1] }}</td>
                                         <td>
                                             <div class="c-p-t-codes">
-                                                @if (custom()->code == 1)
+                                                @if (custom()->online_sequence_code == 1)
                                                     <p>
                                                         {{ $item['product_code'] }}
                                                     </p>
@@ -168,7 +182,9 @@
                                                     order)</span>
                                             </option>
                                             @foreach ($cities as $city)
-                                                <option value="{{ $city->city }}">{{ $city->city }}
+                                                <option
+                                                    {{ old('city', @$billingDetails['city']) == $city->city ? 'selected' : '' }}
+                                                    value="{{ $city->city }}">{{ $city->city }}
                                                 </option>
                                             @endforeach
                                             <option value="other">Other</option>
@@ -214,21 +230,22 @@
                     <div class="col-lg-3">
                         <div class="c-p-btm-info">
                             <ul>
-
                                 <li>Total Items <span>{{ $billingDetails['quantity'] }}</span></li>
                                 <li>Items Total <span>$ {{ $billingDetails['total'] }}</span></li>
-                                {{-- <li>Delivery <span>$ {{ $billingDetails['delivery_fee'] }}</span></li> --}}
-                                <li>Delivery <span class="__deliveryFee">??</span></li>
-                                <li>Courier <span class="courier">??</span></li>
-                                {{-- <li>Subtotal <span>$ {{ $billingDetails['subtotal'] }}</span></li> --}}
-                                <li>Subtotal <span class="__subtotal"> $ {{ $billingDetails['total'] }}</span></li>
+                                <li>Delivery <span
+                                        class="__deliveryFee">{{ $billingDetails['delivery_fee'] ? $billingDetails['delivery_fee'] : '??' }}</span>
+                                </li>
+                                <li>Courier <span
+                                        class="courier">{{ $billingDetails['courier'] ? $billingDetails['courier'] : '??' }}</span>
+                                </li>
+                                <li>Subtotal <span class="__subtotal"> $
+                                        {{ $summaryBillingDetails['subtotal'] ? $summaryBillingDetails['subtotal'] : ($billingDetails['subtotal'] ? $billingDetails['subtotal'] : $billingDetails['total']) }}</span>
+                                </li>
                                 <li>Taxes (ON 13%) <span class="__taxes">
-                                        {{ round($billingDetails['total'] * 0.13, 2) }}</span></li>
-                                {{-- <li>Taxes (ON 13%) <span>$ {{ $billingDetails['taxes'] }}</span></li> --}}
-                                {{-- <li><b>CART Total</b> <span>$ {{ $billingDetails['cart_total'] }}</span>
-                            </li> --}}
+                                        {{ $summaryBillingDetails['taxes'] ? $summaryBillingDetails['taxes'] : ($billingDetails['taxes'] ? $billingDetails['taxes'] : round($billingDetails['total'] * 0.13, 2)) }}</span>
+                                </li>
                                 <li><b>CART Total</b> <span class="__cartTotal">$
-                                        {{ $billingDetails['total'] + round($billingDetails['total'] * 0.13, 2) }}</span>
+                                        {{ $summaryBillingDetails['cart_total'] ? $summaryBillingDetails['cart_total'] : ($billingDetails['cart_total'] ? $billingDetails['cart_total'] : $billingDetails['total'] + round($billingDetails['total'] * 0.13, 2)) }}</span>
                                 </li>
 
                                 {{-- input fields --}}
@@ -253,8 +270,6 @@
                             <div class="c-p-info-btn">
                                 <button type="submit" value="wishlist" class="btn-dovetail wishlist-btn"
                                     id="addToWishlist">Add to Wishlist</button>
-                                {{-- <a href="{{ route('pay') }}" id="proceed" class="btn btn-success">PROCEED TO PAYMENT
-                            </a> --}}
                                 <button type="button" id="proceed" class="btn btn-success">PROCEED TO PAYMENT
                                 </button>
                             </div>
@@ -401,7 +416,6 @@
             $("#validataWishlist").click(function() {
                 let name = $('#val_wishlist_name').val();
                 let id = '{{ auth()->id() }}';
-
                 $.ajax({
                     type: 'get',
                     url: "{{ route('ajaxValidateWishlistName') }}",
@@ -411,7 +425,6 @@
                         cart: 0
                     },
                     success: (response) => {
-                        console.log(response);
                         if (response.success == true) {
                             let msg = 'Wishlist already exists. Do you want to add number (' +
                                 response.number + ') to wishlist name?';
@@ -433,13 +446,26 @@
 
             function saveToWishlist(name) {
                 var id = '{{ auth()->id() }}';
+                var delivery_fee = $("input[name='delivery_fee']").val();
+                let city = $("select[name='city']").val();
+                let courier = $("input[name='courier']").val();
+                let cart_total = $("input[name='cart_total']").val();
+                let taxes = $("input[name='taxes']").val();
+                let subtotal = $("input[name='subtotal']").val();
                 $.ajax({
                     type: 'get',
                     url: "{{ route('ajaxValidateWishlistName') }}",
                     data: {
                         id: id,
                         name: name,
-                        cart: 1
+                        cart: 1,
+                        delivery_fee: delivery_fee,
+                        city: city,
+                        courier: courier,
+                        cart_total: cart_total,
+                        taxes: taxes,
+                        subtotal: subtotal
+
                     },
                     success: (response) => {
                         if (response.success == true) {
@@ -452,6 +478,13 @@
 
                 });
             }
+
+            $(document).ready(function() {
+
+                $('#country').val(localStorage.shipping_city);
+                // $('#country').val('NB');
+
+            })
         </script>
     </x-frontend.section>
 

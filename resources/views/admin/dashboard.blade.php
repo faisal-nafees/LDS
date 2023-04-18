@@ -110,6 +110,10 @@
                                     <input type="text" name="option" id="" class="form-control">
                                 </div>
                                 <div class="form-group">
+                                    <label for="">Code</label>
+                                    <input type="text" name="code" id="" class="form-control">
+                                </div>
+                                <div class="form-group">
                                     <label for="">Price</label>
                                     <input type="text" name="price" id="" class="form-control">
                                 </div>
@@ -136,6 +140,7 @@
                                         <tr>
                                             <th>S. No.</th>
                                             <th>Option</th>
+                                            <th>Code</th>
                                             <th>Price</th>
                                             <th>For</th>
                                             <th>Action</th>
@@ -145,6 +150,7 @@
                                         <tr>
                                             <th>S. No.</th>
                                             <th>Option</th>
+                                            <th>Code</th>
                                             <th>Price</th>
                                             <th>For</th>
                                             <th>Action</th>
@@ -156,6 +162,7 @@
                                             <tr>
                                                 <td>{{ $i++ }}</td>
                                                 <td>{{ $option->option }}</td>
+                                                <td>{{ $option->code }}</td>
                                                 <td>${{ $option->price }}</td>
                                                 <td>
                                                     @if ($option->for == 0)
@@ -168,9 +175,13 @@
                                                         {{ __('Bottom Thickness') }}
                                                     @endif
                                                 </td>
-                                                <td>
+                                                <td class="d-flex justify-content-center align-items-center"
+                                                    style="gap: 3px" width="100%">
+                                                    <button onClick="editOption({{ @$option->id }})" type="button"
+                                                        class="btn btn-primary btn-sm">Edit
+                                                    </button>
                                                     <form action="{{ route('select.option.destroy', $option->id) }}"
-                                                        method="POST">
+                                                        class="mb-0" method="POST">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="submit"
@@ -200,12 +211,28 @@
                         <div class="card-body">
                             <form action="{{ route('custom') }}" method="POST">
                                 @csrf
-                                <div class="form-group">
-                                    <label for="">Code</label>
-                                    <input type="hidden" name="code" value="0">
-                                    <input type="checkbox" name="code" value="1"
-                                        {{ custom()->code == 1 ? 'checked' : '' }}>
+                                <div class="font-weight-bold">
+                                    Code:
                                 </div>
+                                <div class="form-group">
+                                    <label for="">Online Sequence</label>
+                                    <input type="hidden" name="online_sequence_code" value="0">
+                                    <input type="checkbox" class="mr-3" name="online_sequence_code" value="1"
+                                        {{ custom()->online_sequence_code == 1 ? 'checked' : '' }}>
+                                    <label for="">Sales Order</label>
+                                    <input type="hidden" name="sales_order_code" value="0">
+                                    <input type="checkbox" class="mr-3" name="sales_order_code" value="1"
+                                        {{ custom()->sales_order_code == 1 ? 'checked' : '' }}>
+                                    <label for="">Purchase Order</label>
+                                    <input type="hidden" name="purchase_order_code" value="0">
+                                    <input type="checkbox" class="mr-3" name="purchase_order_code" value="1"
+                                        {{ custom()->purchase_order_code == 1 ? 'checked' : '' }}>
+                                    <label for="">Packing Slip</label>
+                                    <input type="hidden" name="packing_slip_code" value="0">
+                                    <input type="checkbox" class="mr-3" name="packing_slip_code" value="1"
+                                        {{ custom()->packing_slip_code == 1 ? 'checked' : '' }}>
+                                </div>
+
                                 <div class="form-group">
                                     <label for="">Markup Price</label>
                                     <input type="number" name="markup_price" value="{{ custom()->markup_price }}"
@@ -222,7 +249,68 @@
                 <!-- /.container-fluid -->
 
 
+                <p id="openModal" data-toggle="modal" data-target="#editOption"></p>
+                <div class="modal fade" id="editOption" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Edit Option</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="{{ route('select.updateOption') }}" method="post">
+                                    @csrf
+                                    <input name="id" type="hidden" value="">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="form-group">
+                                                <label>Option</label>
+                                                <input type="text" class="form-control" name="edit_option"
+                                                    required>
+                                            </div>
+                                        </div>
 
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label>Code</label>
+                                                <input type="text" class="form-control" name="edit_code" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <label for="exampleFormControlInput1">Price</label>
+                                                <input type="text" class="form-control" name="edit_price">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12 class_access">
+                                            <label for="">Option For</label>
+                                            <select name="edit_for" class="form-control" required>
+                                                <option disabled selected>--SELECT--</option>
+                                                <option value="0">Bracket</option>
+                                                <option value="1">Front Notch</option>
+                                                <option value="2">Back Notch</option>
+                                                <option value="3">Bottom Thickness</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-success">Save changes</button>
+                                    </div>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
 
 
             </div>
@@ -248,5 +336,34 @@
 
 
 
+
     </x-section>
+    <script>
+        function editOption(e) {
+            $id = e;
+
+            $.ajax({
+                type: 'POST',
+                url: "{{ URL::to('/select/editOption') }}",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    id: $id
+                },
+                success: function(data) {
+                    if (data.option) {
+                        $("input[name*='id']").val(data.option['id']);
+                        $("input[name*='edit_option']").val(data.option['option']);
+                        $("input[name*='edit_code']").val(data.option['code']);
+                        $("input[name*='edit_price']").val(data.option['price']);
+                        $("select[name*='edit_for']").val(data.option['for']).attr('selected', 'selected');
+                        $('#openModal').click();
+                    } else {
+                        alert(data.error);
+                    }
+
+                }
+            });
+
+        }
+    </script>
 </x-layout>

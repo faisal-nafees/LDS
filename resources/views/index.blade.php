@@ -7,7 +7,6 @@
             }
         </style>
     </x-section>
-
     <section class="product-page-wrapper">
         <div class="container">
             <div class="row">
@@ -212,7 +211,8 @@
                                         <option selected="" disabled>Select</option>
 
                                         @foreach ($bottomThickness as $option)
-                                            <option value="{{ $option->id }}">{{ $option->option }}</option>
+                                            <option value="{{ $option->id }}">
+                                                {{ $option->option }}</option>
                                         @endforeach
 
                                     </select>
@@ -432,7 +432,7 @@
 
                                     @forelse ($products as $product)
                                         <option value="{{ $product->id }}">
-                                            @if (custom()->code == 1)
+                                            @if (custom()->online_sequence_code == 1)
                                                 (&nbsp;{{ $product->code }}&nbsp;)
                                             @endif
                                             {{ $product->name }}
@@ -457,7 +457,7 @@
                         {{-- end: Show Selected Product Button --}}
 
 
-                        <div class="col-12 col-md-2 col-sm-6 heightDiv">
+                        <div class="col-12 col-md-2 col-sm-6 h-100 heightDiv" id="heightDiv1">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text font-weight-bold" id="idwidth">H
@@ -494,7 +494,7 @@
                         </div>
                         <!-- end: H (in) -->
 
-                        <div class="col-12 col-md-2 col-sm-6 widthDiv">
+                        <div class="col-12 col-md-2 col-sm-6 h-100 widthDiv">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text font-weight-bold" id="idwidth">W
@@ -531,7 +531,7 @@
                         </div>
                         <!-- end: W (in) -->
 
-                        <div class="col-12 col-md-2 col-sm-6 depthDiv">
+                        <div class="col-12 col-md-2 col-sm-6 h-100 depthDiv">
                             <div class="input-group">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text font-weight-bold" id="idwidth">D
@@ -713,7 +713,166 @@
             // check which button is going to submit the form
             $('.orderFormSubmitBtn').click(function(e) {
                 e.preventDefault();
-                $("#wishlistModel").modal('show');
+                var unit = $('#__unit').val();
+                var sbt = $('#selectBottomThickness').val();
+                var bn = $('#select2').val();
+                var fn = $('#frontNotchForUndermount').val();
+                var bkt = $('#brackets').val();
+                var lb = $('#logoBranded').val();
+                var product = $('#inputGroupSelect02').val();
+                let h = $('input[name="height[]"]').map(function() {
+                    return $(this).val();
+                }).get();
+                let w = $('input[name="width[]"]').map(function() {
+                    return $(this).val();
+                }).get();
+                let d = $('input[name="depth[]"]').map(function() {
+                    return $(this).val();
+                }).get();
+                var formCondition = true;
+
+                if (!unit) {
+                    alert('Please select Imperial (in)/Metric (mm)');
+                    formCondition = false;
+                } else if (!sbt) {
+                    alert('Please select Bottom Thickness + Grain Direction');
+                    formCondition = false;
+                } else if (!bn) {
+                    alert('Please select Back Notch and Drill Undermount Slides');
+                    formCondition = false;
+                } else if (!fn) {
+                    alert('Please select Add Front Notch for Undermount Slides');
+                    formCondition = false;
+                } else if (!bkt) {
+                    alert('Please select Add + Install Brackets');
+                    formCondition = false;
+                } else if (!lb) {
+                    alert('Please select Logo Branded');
+                    formCondition = false;
+                } else if (!product) {
+                    alert('Please select Product');
+                    formCondition = false;
+                } else {
+                    if ($('#__unit').val() == 'in') {
+
+                        for (let i = 0; i < h.length; i++) {
+                            if (!($('#heightDiv' + (i + 1)).css("visibility") == "hidden")) {
+
+                                if (h[i] <= 0 || h[i] > 12) {
+                                    alert('Maximum Height is 12"');
+                                    formCondition = false;
+                                } else if (w[i] <= 0 || w[i] > 47.5) {
+                                    alert('Maximum Width is 47.5"');
+                                    formCondition = false;
+
+                                } else if (d[i] <= 0 || d[i] > 47.5) {
+                                    alert('Maximum Depth is 47.5"');
+                                    formCondition = false;
+
+                                } else if (w[i] > 32 && d[i] > 32) {
+                                    alert('Max material size is 47.5" * 32" \nor\nMax material size is 32" * 47.5"');
+                                    formCondition = false;
+                                }
+                            }
+
+                        }
+                    } else {
+                        for (let i = 0; i < h.length; i++) {
+                            if (!($('#heightDiv' + (i + 1)).css("visibility") == "hidden")) {
+                                if (h[i] <= 0 || h[i] > 304.8) {
+                                    alert('Maximum Height is 304.8mm');
+                                    formCondition = false;
+                                } else if (w[i] <= 0 || w[i] > 1206.5) {
+                                    alert('Maximum Width is 1206.5mm');
+                                    formCondition = false;
+
+                                } else if (d[i] <= 0 || d[i] > 1206.5) {
+                                    alert('Maximum Depth is 1206.5mm');
+                                    formCondition = false;
+
+                                } else if (w[i] > 812.8 && d[i] > 812.8) {
+                                    alert(
+                                        'Max material size is 1206.5mm * 812.8mm \nor\nMax material size is 812.8mm * 1206.5mm'
+                                    );
+                                    formCondition = false;
+                                }
+                            }
+                        }
+                    }
+                }
+                if (formCondition) {
+
+                    $("#wishlistModel").modal('show');
+                }
+            });
+
+            $('.proceedToCart').click(function(e) {
+                e.preventDefault();
+                let h = $('input[name="height[]"]').map(function() {
+                    return $(this).val();
+                }).get();
+                let w = $('input[name="width[]"]').map(function() {
+                    return $(this).val();
+                }).get();
+                let d = $('input[name="depth[]"]').map(function() {
+                    return $(this).val();
+                }).get();
+                var formCondition = true;
+                if ($('#__unit').val() == 'in') {
+
+                    for (let i = 0; i < h.length; i++) {
+                        if (!($('#heightDiv' + (i + 1)).css("visibility") == "hidden")) {
+
+                            if (h[i] <= 0 || h[i] > 12) {
+                                alert('Maximum Height is 12"');
+                                formCondition = false;
+                            } else if (w[i] <= 0 || w[i] > 47.5) {
+                                alert('Maximum Width is 47.5"');
+                                formCondition = false;
+
+                            } else if (d[i] <= 0 || d[i] > 47.5) {
+                                alert('Maximum Depth is 47.5"');
+                                formCondition = false;
+
+                            } else if (w[i] > 32 && d[i] > 32) {
+                                alert('Max material size is 47.5" * 32" \nor\nMax material size is 32" * 47.5"');
+                                formCondition = false;
+                            }
+                        }
+
+                    }
+                } else {
+                    for (let i = 0; i < h.length; i++) {
+                        if (!($('#heightDiv' + (i + 1)).css("visibility") == "hidden")) {
+                            if (h[i] <= 0 || h[i] > 304.8) {
+                                alert('Maximum Height is 304.8mm');
+                                formCondition = false;
+                            } else if (w[i] <= 0 || w[i] > 1206.5) {
+                                alert('Maximum Width is 1206.5mm');
+                                formCondition = false;
+
+                            } else if (d[i] <= 0 || d[i] > 1206.5) {
+                                alert('Maximum Depth is 1206.5mm');
+                                formCondition = false;
+
+                            } else if (w[i] > 812.8 && d[i] > 812.8) {
+                                alert(
+                                    'Max material size is 1206.5mm * 812.8mm \nor\nMax material size is 812.8mm * 1206.5mm'
+                                );
+                                formCondition = false;
+                            }
+                        }
+                    }
+                }
+
+                if (formCondition) {
+                    $('form').submit();
+                }
+
+
+
+
+
             });
 
             $("#validataWishlist").click(function() {
@@ -873,3 +1032,4 @@
     </x-frontend.section>
 
 </x-frontend.layout>
+if width i>32 then depth<=32

@@ -22,7 +22,7 @@
 
                     @forelse ($products as $product)
                         <option value="{{ $product->id }}">
-                            @if (custom()->code == 1)
+                            @if (custom()->online_sequence_code == 1)
                                 (&nbsp;{{ $product->code }}&nbsp;)
                             @endif
                             {{ $product->name }}
@@ -43,7 +43,7 @@
         {{-- end: Show Selected Product Button --}}
 
 
-        <div class="col-12 col-md-2 col-sm-6 heightDiv">
+        <div class="col-12 col-md-2 col-sm-6 h-100 heightDiv" id="heightDiv{{ $id }}">
             <div class="input-group">
                 <div class="input-group-prepend">
                     <span class="input-group-text font-weight-bold" id="idwidth">H
@@ -75,7 +75,7 @@
         </div>
         <!-- end: H (in) -->
 
-        <div class="col-12 col-md-2 col-sm-6 widthDiv">
+        <div class="col-12 col-md-2 col-sm-6 h-100 widthDiv">
             <div class="input-group">
                 <div class="input-group-prepend">
                     <span class="input-group-text font-weight-bold" id="idwidth">W
@@ -107,7 +107,7 @@
         </div>
         <!-- end: W (in) -->
 
-        <div class="col-12 col-md-2 col-sm-6 depthDiv">
+        <div class="col-12 col-md-2 col-sm-6 h-100 depthDiv">
             <div class="input-group">
                 <div class="input-group-prepend">
                     <span class="input-group-text font-weight-bold" id="idwidth">D

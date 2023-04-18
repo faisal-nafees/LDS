@@ -6,9 +6,9 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div class="product-breadcrumb other-page">
-                        <span> <a href="{{ route('index') }}" class="pb-c-page fw-normal">Order</a> » <a
-                                href="{{ route('cart') }}" class="pb-c-page fw-normal">Cart</a> » <a
-                                href="{{ route('checkout') }}" class="pb-c-page">Billing/Shipping</a> </span>
+                        <span> <a href="{{ route('index') }}" class="pb-c-page fw-normal">Order</a>
+                            » <a href="{{ route('cart') }}" class="pb-c-page fw-normal">Cart</a>
+                            » <a href="{{ route('checkout') }}" class="pb-c-page">Billing/Shipping</a> </span>
                     </div>
                 </div>
             </div>
@@ -71,7 +71,7 @@
                         <div class="form-group mt-2 col-lg-6">
                             <label for="">Email*</label>
                             <input type="email" name="billing_email" class="form-control" placeholder="Billing Email"
-                                value="{{ $user->user_billing_email }}">
+                                value="{{ $user->user_email }}" readonly>
                             @if ($errors->has('billing_email'))
                                 <div class="error text-danger">
                                     {{ $errors->first('billing_email') }}</div>
@@ -89,7 +89,7 @@
                                     {{ $errors->first('billing_address') }}</div>
                             @endif
                         </div>
-                        <div class="form-group mt-2 col-lg-6">
+                        <div class="form-group col-lg-6" style="margin-top: 32px">
                             <label for="">City*</label>
                             <input type="text" name="billing_city" class="form-control" placeholder="Billing City"
                                 value="{{ $user->user_billing_city }}">
@@ -257,7 +257,8 @@
                         <div class="form-group mt-2 col-lg-6">
                             <label for="">First Name*</label>
                             <input type="text" name="shipping_first_name" class="form-control secondaryFields"
-                                id="first_name" onchange="getValue()" placeholder="Shipping First name">
+                                id="first_name" onchange="getValue()" placeholder="Shipping First name"
+                                value="{{ @$billingDetails['shipping_first_name'] }}">
                             @if ($errors->has('shipping_first_name'))
                                 <div class="error text-danger">
                                     {{ $errors->first('shipping_first_name') }}</div>
@@ -266,33 +267,38 @@
                         <div class="form-group mt-2 col-lg-6">
                             <label for="">Last Name*</label>
                             <input type="text" id="last_name" name="shipping_last_name" onchange="getValue()"
+                                value="{{ @$billingDetails['shipping_last_name'] }}"
                                 class="form-control secondaryFields" placeholder="Shipping Last name">
                             @if ($errors->has('shipping_last_name'))
                                 <div class="error text-danger">
                                     {{ $errors->first('shipping_last_name') }}</div>
                             @endif
                         </div>
+
+                        <div class="form-group mt-2 col-lg-6">
+                            <label for="">Telephone*</label>
+                            <input type="tel" id="phone" name="shipping_phone" onchange="getValue()"
+                                value="{{ @$billingDetails['shipping_phone'] }}" class="form-control secondaryFields"
+                                placeholder="Shipping Phone">
+                            @if ($errors->has('shipping_phone'))
+                                <div class="error text-danger">
+                                    {{ $errors->first('shipping_phone') }}</div>
+                            @endif
+                        </div>
                         <div class="form-group mt-2 col-lg-6">
                             <label for="">Email*</label>
                             <input type="email" id="email" name="shipping_email" onchange="getValue()"
-                                class="form-control secondaryFields" placeholder="Shipping Email">
+                                value="{{ @$billingDetails['shipping_email'] }}" class="form-control secondaryFields"
+                                placeholder="Shipping Email">
                             @if ($errors->has('shipping_email'))
                                 <div class="error text-danger">
                                     {{ $errors->first('shipping_email') }}</div>
                             @endif
                         </div>
                         <div class="form-group mt-2 col-lg-6">
-                            <label for="">Telephone*</label>
-                            <input type="tel" id="phone" name="shipping_phone" onchange="getValue()"
-                                class="form-control secondaryFields" placeholder="Shipping Phone">
-                            @if ($errors->has('shipping_phone'))
-                                <div class="error text-danger">
-                                    {{ $errors->first('shipping_phone') }}</div>
-                            @endif
-                        </div>
-                        <div class="form-group mt-2 col-lg-12">
                             <label for="">Address</label>
                             <input type="text" id="address" name="shipping_address" onchange="getValue()"
+                                value="{{ @$billingDetails['shipping_address'] }}"
                                 class="form-control secondaryFields" placeholder="Shipping Address">
                             @if ($errors->has('shipping_address'))
                                 <div class="error text-danger">
@@ -302,91 +308,220 @@
                         <div class="form-group mt-2 col-lg-6">
                             <label for="">City*</label>
                             <input type="text" id="city" name="shipping_city" onchange="getValue()"
-                                class="form-control secondaryFields" placeholder="Shipping City"
-                                value="{{ session()->get('billingDetails')['city'] }}">
+                                value="{{ @$billingDetails['shipping_city'] }}" class="form-control secondaryFields"
+                                placeholder="Shipping City">
                             @if ($errors->has('shipping_city'))
                                 <div class="error text-danger">
                                     {{ $errors->first('shipping_city') }}</div>
                             @endif
                         </div>
                         <div class="form-group mt-2 col-lg-6">
-                            <label for="">Province/State and Country *</label>
-                            <select name="shipping_country" id="country" class="form-control secondaryFields"
-                                onchange="getValue()"="">
-                                <option value="AB">AB (CA)</option>
-                                <option value="BC">BC (CA)</option>
-                                <option value="MB">MB (CA)</option>
-                                <option value="NB">NB (CA)</option>
-                                <option value="NL">NL (CA)</option>
-                                <option value="NT">NT (CA)</option>
-                                <option value="NS">NS (CA)</option>
-                                <option value="NU">NU (CA)</option>
-                                <option value="ON">ON (CA)</option>
-                                <option value="PE">PE (CA)</option>
-                                <option value="QC">QC (CA)</option>
-                                <option value="SK">SK (CA)</option>
-                                <option value="YT">YT (CA)</option>
-                                <option value="AL">AL (US)</option>
-                                <option value="AK">AK (US)</option>
-                                <option value="AZ">AZ (US)</option>
-                                <option value="AR">AR (US)</option>
-                                <option value="CA">CA (US)</option>
-                                <option value="CO">CO (US)</option>
-                                <option value="CT">CT (US)</option>
-                                <option value="DE">DE (US)</option>
-                                <option value="FL">FL (US)</option>
-                                <option value="GA">GA (US)</option>
-                                <option value="HI">HI (US)</option>
-                                <option value="ID">ID (US)</option>
-                                <option value="IL">IL (US)</option>
-                                <option value="IN">IN (US)</option>
-                                <option value="IA">IA (US)</option>
-                                <option value="KS">KS (US)</option>
-                                <option value="KY">KY (US)</option>
-                                <option value="LA">LA (US)</option>
-                                <option value="ME">ME (US)</option>
-                                <option value="MD">MD (US)</option>
-                                <option value="MA">MA (US)</option>
-                                <option value="MI">MI (US)</option>
-                                <option value="MN">MN (US)</option>
-                                <option value="MS">MS (US)</option>
-                                <option value="MO">MO (US)</option>
-                                <option value="MT">MT (US)</option>
-                                <option value="NE">NE (US)</option>
-                                <option value="NV">NV (US)</option>
-                                <option value="NH">NH (US)</option>
-                                <option value="NJ">NJ (US)</option>
-                                <option value="NM">NM (US)</option>
-                                <option value="NY">NY (US)</option>
-                                <option value="NC">NC (US)</option>
-                                <option value="ND">ND (US)</option>
-                                <option value="OH">OH (US)</option>
-                                <option value="OK">OK (US)</option>
-                                <option value="OR">OR (US)</option>
-                                <option value="PA">PA (US)</option>
-                                <option value="RI">RI (US)</option>
-                                <option value="SC">SC (US)</option>
-                                <option value="SD">SD (US)</option>
-                                <option value="TN">TN (US)</option>
-                                <option value="TX">TX (US)</option>
-                                <option value="UT">UT (US)</option>
-                                <option value="VT">VT (US)</option>
-                                <option value="VA">VA (US)</option>
-                                <option value="WA">WA (US)</option>
-                                <option value="WV">WV (US)</option>
-                                <option value="WI">WI (US)</option>
-                                <option value="WY">WY (US)</option>
-                            </select>
-                        </div>
-                        <div class="form-group mt-2 col-lg-6">
                             <label for="">Postal/Zip Code*</label>
                             <input type="text" id="postal_code" name="shipping_postal_code" onchange="getValue()"
+                                value="{{ @$billingDetails['shipping_postal_code'] }}"
                                 class="form-control secondaryFields" placeholder="Shipping Postal Code">
                             @if ($errors->has('shipping_postal_code'))
                                 <div class="error text-danger">
                                     {{ $errors->first('shipping_postal_code') }}</div>
                             @endif
                         </div>
+                        <div class="form-group mt-2 col-lg-6">
+                            <label for="">Province/State and Country *</label>
+                            <select name="shipping_country" id="country" class="form-control secondaryFields"
+                                onchange="getValue()">
+                                <option disabled="">Select</option>
+                                <option value="AB"
+                                    {{ @$billingDetails['shipping_country'] == 'AB' ? 'selected' : '' }}>AB
+                                    (CA)</option>
+                                <option value="BC"
+                                    {{ @$billingDetails['shipping_country'] == 'BC' ? 'selected' : '' }}>BC
+                                    (CA)</option>
+                                <option value="MB"
+                                    {{ @$billingDetails['shipping_country'] == 'MB' ? 'selected' : '' }}>MB
+                                    (CA)</option>
+                                <option value="NB"
+                                    {{ @$billingDetails['shipping_country'] == 'NB' ? 'selected' : '' }}>NB
+                                    (CA)</option>
+                                <option value="NL"
+                                    {{ @$billingDetails['shipping_country'] == 'NL' ? 'selected' : '' }}>NL
+                                    (CA)</option>
+                                <option value="NT"
+                                    {{ @$billingDetails['shipping_country'] == 'NT' ? 'selected' : '' }}>NT
+                                    (CA)</option>
+                                <option value="NS"
+                                    {{ @$billingDetails['shipping_country'] == 'NS' ? 'selected' : '' }}>NS
+                                    (CA)</option>
+                                <option value="NU"
+                                    {{ @$billingDetails['shipping_country'] == 'NU' ? 'selected' : '' }}>NU
+                                    (CA)</option>
+                                <option value="ON"
+                                    {{ @$billingDetails['shipping_country'] == 'ON' ? 'selected' : '' }}>ON
+                                    (CA)</option>
+                                <option value="PE"
+                                    {{ @$billingDetails['shipping_country'] == 'PE' ? 'selected' : '' }}>PE
+                                    (CA)</option>
+                                <option value="QC"
+                                    {{ @$billingDetails['shipping_country'] == 'QC' ? 'selected' : '' }}>QC
+                                    (CA)</option>
+                                <option value="SK"
+                                    {{ @$billingDetails['shipping_country'] == 'SK' ? 'selected' : '' }}>SK
+                                    (CA)</option>
+                                <option value="YT"
+                                    {{ @$billingDetails['shipping_country'] == 'YT' ? 'selected' : '' }}>YT
+                                    (CA)</option>
+                                <option value="AL"
+                                    {{ @$billingDetails['shipping_country'] == 'AL' ? 'selected' : '' }}>AL
+                                    (US)</option>
+                                <option value="AK"
+                                    {{ @$billingDetails['shipping_country'] == 'AK' ? 'selected' : '' }}>AK
+                                    (US)</option>
+                                <option value="AZ"
+                                    {{ @$billingDetails['shipping_country'] == 'AZ' ? 'selected' : '' }}>AZ
+                                    (US)</option>
+                                <option value="AR"
+                                    {{ @$billingDetails['shipping_country'] == 'AR' ? 'selected' : '' }}>AR
+                                    (US)</option>
+                                <option value="CA"
+                                    {{ @$billingDetails['shipping_country'] == 'CA' ? 'selected' : '' }}>CA
+                                    (US)</option>
+                                <option value="CO"
+                                    {{ @$billingDetails['shipping_country'] == 'CO' ? 'selected' : '' }}>CO
+                                    (US)</option>
+                                <option value="CT"
+                                    {{ @$billingDetails['shipping_country'] == 'CT' ? 'selected' : '' }}>CT
+                                    (US)</option>
+                                <option value="DE"
+                                    {{ @$billingDetails['shipping_country'] == 'DE' ? 'selected' : '' }}>DE
+                                    (US)</option>
+                                <option value="FL"
+                                    {{ @$billingDetails['shipping_country'] == 'FL' ? 'selected' : '' }}>FL
+                                    (US)</option>
+                                <option value="GA"
+                                    {{ @$billingDetails['shipping_country'] == 'GA' ? 'selected' : '' }}>GA
+                                    (US)</option>
+                                <option value="HI"
+                                    {{ @$billingDetails['shipping_country'] == 'HI' ? 'selected' : '' }}>HI
+                                    (US)</option>
+                                <option value="ID"
+                                    {{ @$billingDetails['shipping_country'] == 'ID' ? 'selected' : '' }}>ID
+                                    (US)</option>
+                                <option value="IL"
+                                    {{ @$billingDetails['shipping_country'] == 'IL' ? 'selected' : '' }}>IL
+                                    (US)</option>
+                                <option value="IN"
+                                    {{ @$billingDetails['shipping_country'] == 'IN' ? 'selected' : '' }}>IN
+                                    (US)</option>
+                                <option value="IA"
+                                    {{ @$billingDetails['shipping_country'] == 'IA' ? 'selected' : '' }}>IA
+                                    (US)</option>
+                                <option value="KS"
+                                    {{ @$billingDetails['shipping_country'] == 'KS' ? 'selected' : '' }}>KS
+                                    (US)</option>
+                                <option value="KY"
+                                    {{ @$billingDetails['shipping_country'] == 'KY' ? 'selected' : '' }}>KY
+                                    (US)</option>
+                                <option value="LA"
+                                    {{ @$billingDetails['shipping_country'] == 'LA' ? 'selected' : '' }}>LA
+                                    (US)</option>
+                                <option value="ME"
+                                    {{ @$billingDetails['shipping_country'] == 'ME' ? 'selected' : '' }}>ME
+                                    (US)</option>
+                                <option value="MD"
+                                    {{ @$billingDetails['shipping_country'] == 'MD' ? 'selected' : '' }}>MD
+                                    (US)</option>
+                                <option value="MA"
+                                    {{ @$billingDetails['shipping_country'] == 'MA' ? 'selected' : '' }}>MA
+                                    (US)</option>
+                                <option value="MI"
+                                    {{ @$billingDetails['shipping_country'] == 'MI' ? 'selected' : '' }}>MI
+                                    (US)</option>
+                                <option value="MN"
+                                    {{ @$billingDetails['shipping_country'] == 'MN' ? 'selected' : '' }}>MN
+                                    (US)</option>
+                                <option value="MS"
+                                    {{ @$billingDetails['shipping_country'] == 'MS' ? 'selected' : '' }}>MS
+                                    (US)</option>
+                                <option value="MO"
+                                    {{ @$billingDetails['shipping_country'] == 'MO' ? 'selected' : '' }}>MO
+                                    (US)</option>
+                                <option value="MT"
+                                    {{ @$billingDetails['shipping_country'] == 'MT' ? 'selected' : '' }}>MT
+                                    (US)</option>
+                                <option value="NE"
+                                    {{ @$billingDetails['shipping_country'] == 'NE' ? 'selected' : '' }}>NE
+                                    (US)</option>
+                                <option value="NV"
+                                    {{ @$billingDetails['shipping_country'] == 'NV' ? 'selected' : '' }}>NV
+                                    (US)</option>
+                                <option value="NH"
+                                    {{ @$billingDetails['shipping_country'] == 'NH' ? 'selected' : '' }}>NH
+                                    (US)</option>
+                                <option value="NJ"
+                                    {{ @$billingDetails['shipping_country'] == 'NJ' ? 'selected' : '' }}>NJ
+                                    (US)</option>
+                                <option value="NM"
+                                    {{ @$billingDetails['shipping_country'] == 'NM' ? 'selected' : '' }}>NM
+                                    (US)</option>
+                                <option value="NY"
+                                    {{ @$billingDetails['shipping_country'] == 'NY' ? 'selected' : '' }}>NY
+                                    (US)</option>
+                                <option value="NC"
+                                    {{ @$billingDetails['shipping_country'] == 'NC' ? 'selected' : '' }}>NC
+                                    (US)</option>
+                                <option value="ND"
+                                    {{ @$billingDetails['shipping_country'] == 'ND' ? 'selected' : '' }}>ND
+                                    (US)</option>
+                                <option value="OH"
+                                    {{ @$billingDetails['shipping_country'] == 'OH' ? 'selected' : '' }}>OH
+                                    (US)</option>
+                                <option value="OK"
+                                    {{ @$billingDetails['shipping_country'] == 'OK' ? 'selected' : '' }}>OK
+                                    (US)</option>
+                                <option value="OR"
+                                    {{ @$billingDetails['shipping_country'] == 'OR' ? 'selected' : '' }}>OR
+                                    (US)</option>
+                                <option value="PA"
+                                    {{ @$billingDetails['shipping_country'] == 'PA' ? 'selected' : '' }}>PA
+                                    (US)</option>
+                                <option value="RI"
+                                    {{ @$billingDetails['shipping_country'] == 'RI' ? 'selected' : '' }}>RI
+                                    (US)</option>
+                                <option value="SC"
+                                    {{ @$billingDetails['shipping_country'] == 'SC' ? 'selected' : '' }}>SC
+                                    (US)</option>
+                                <option value="SD"
+                                    {{ @$billingDetails['shipping_country'] == 'SD' ? 'selected' : '' }}>SD
+                                    (US)</option>
+                                <option value="TN"
+                                    {{ @$billingDetails['shipping_country'] == 'TN' ? 'selected' : '' }}>TN
+                                    (US)</option>
+                                <option value="TX"
+                                    {{ @$billingDetails['shipping_country'] == 'TX' ? 'selected' : '' }}>TX
+                                    (US)</option>
+                                <option value="UT"
+                                    {{ @$billingDetails['shipping_country'] == 'UT' ? 'selected' : '' }}>UT
+                                    (US)</option>
+                                <option value="VT"
+                                    {{ @$billingDetails['shipping_country'] == 'VT' ? 'selected' : '' }}>VT
+                                    (US)</option>
+                                <option value="VA"
+                                    {{ @$billingDetails['shipping_country'] == 'VA' ? 'selected' : '' }}>VA
+                                    (US)</option>
+                                <option value="WA"
+                                    {{ @$billingDetails['shipping_country'] == 'WA' ? 'selected' : '' }}>WA
+                                    (US)</option>
+                                <option value="WV"
+                                    {{ @$billingDetails['shipping_country'] == 'WV' ? 'selected' : '' }}>WV
+                                    (US)</option>
+                                <option value="WI"
+                                    {{ @$billingDetails['shipping_country'] == 'WI' ? 'selected' : '' }}>WI
+                                    (US)</option>
+                                <option value="WY"
+                                    {{ @$billingDetails['shipping_country'] == 'WY' ? 'selected' : '' }}>WY
+                                    (US)</option>
+                            </select>
+                        </div>
+
 
 
                     </div>
@@ -406,7 +541,6 @@
 
             $(".sameAsBilling").click(function() {
 
-                let city = '{{ session()->get('billingDetails')['city'] }}';
                 if ($(this).is(":checked")) {
                     let bfn = $("input[name='billing_first_name']").val();
                     let bln = $("input[name='billing_last_name']").val();
@@ -416,15 +550,17 @@
                     let bpc = $("input[name='billing_postal_code']").val();
                     let bp = $("input[name='billing_phone']").val();
                     let bc = $("select[name='billing_country']").val();
+                    console.log(be);
 
                     $("input[name='shipping_first_name']").val(bfn);
                     $("input[name='shipping_last_name']").val(bln);
                     $("input[name='shipping_email']").val(be);
                     $("input[name='shipping_address']").val(ba);
+                    $("input[name='shipping_city']").val(bcity);
 
-                    if (city == 'other') {
-                        $("input[name='shipping_city']").val(bcity);
-                    }
+                    // if (city == 'other') {
+                    //     $("input[name='shipping_city']").val(bcity);
+                    // }
 
                     $("input[name='shipping_postal_code']").val(bpc);
                     $("input[name='shipping_phone']").val(bp);
@@ -478,15 +614,40 @@
             }
 
             $(document).ready(function() {
-                $('#first_name').val(localStorage.shipping_first_name);
-                $('#last_name').val(localStorage.shipping_last_name);
-                $('#email').val(localStorage.shipping_email);
-                $('#address').val(localStorage.shipping_address);
-                $('#city').val(localStorage.shipping_city);
-                $('#postal_code').val(localStorage.shipping_postal_code);
-                $('#phone').val(localStorage.shipping_phone);
-                $('#country').val(localStorage.shipping_country).attr("selected", "selected");
+                let sfn = $("input[name='shipping_first_name']").val();
+                let sln = $("input[name='shipping_last_name']").val();
+                let se = $("input[name='shipping_email']").val();
+                let sa = $("input[name='shipping_address']").val();
+                let scity = $("input[name='shipping_city']").val();
+                let spc = $("input[name='shipping_postal_code']").val();
+                let sp = $("input[name='shipping_phone']").val();
+                let sc = $("select[name='shipping_country']").val();
+                if (!sfn) {
+                    $('#first_name').val(localStorage.shipping_first_name);
+                }
+                if (!sln) {
+                    $('#last_name').val(localStorage.shipping_last_name);
+                }
+                if (!se) {
+                    $('#email').val(localStorage.shipping_email);
+                }
+                if (!sa) {
+                    $('#address').val(localStorage.shipping_address);
+                }
+                if (!scity) {
+                    $('#city').val(localStorage.shipping_city);
+                }
+                if (!spc) {
+                    $('#postal_code').val(localStorage.shipping_postal_code);
+                }
+                if (!sp) {
+                    $('#phone').val(localStorage.shipping_phone);
+                }
+                if (!sc) {
+                    $('#country').val(localStorage.shipping_country).attr("selected", "selected");
+                }
                 // $('#country').val('NB');
+
             })
         </script>
     </x-frontend.section>

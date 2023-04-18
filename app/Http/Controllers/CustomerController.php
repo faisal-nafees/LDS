@@ -28,7 +28,7 @@ class CustomerController extends Controller
         $data = [
             'user_billing_fname' => $request->first_name,
             'user_billing_lname' => $request->last_name,
-            'user_billing_company' => $request->campany,
+            'user_billing_company' => $request->company,
             'user_billing_po' => $request->po,
             'user_billing_tax' => $request->tax,
             'user_billing_address' => $request->address,
